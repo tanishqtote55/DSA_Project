@@ -21,6 +21,8 @@ void displayTouristSpots(const char* cityName){
     char line[MAX_LINE_LENGTH];
     char *token;
 
+    fgets(line, sizeof(line), file);
+    
     while(fgets(line, sizeof(line), file)){
         char city[MAX_CITY_NAME];
         char spotName[100], rating[10], type[50], longitude[20], latitude[20];
