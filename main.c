@@ -22,10 +22,11 @@ void displayTouristSpots(const char* cityName){
     char *token;
 
     fgets(line, sizeof(line), file);
-    
+
     while(fgets(line, sizeof(line), file)){
         char city[MAX_CITY_NAME];
-        char spotName[100], rating[10], type[50], longitude[20], latitude[20];
+        char spotName[100], type[50], longitude[20], latitude[20];
+        float rating;
 
         token = strtok(line, ","); 
         strcpy(city, token);
@@ -34,7 +35,7 @@ void displayTouristSpots(const char* cityName){
         strcpy(spotName, token);
 
         token = strtok(NULL, ",");
-        strcpy(rating, token);
+        rating = atof(token);
 
         token = strtok(NULL, ",");
         strcpy(type, token); 
@@ -56,7 +57,7 @@ void displayTouristSpots(const char* cityName){
         if(strcmp(cityLower, cityNameLower) == 0){
             printf("%s", city);
             printf(" %s", spotName);
-            printf(" %s", rating);
+            printf(" %.2f", rating);
             printf(" %s", type);
             printf(" %s", longitude);
             printf(" %s\n", latitude);
