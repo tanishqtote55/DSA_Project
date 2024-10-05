@@ -293,6 +293,101 @@ void dijkstra_iterative_recursive(SLL head, const char *startSpotName, float **d
     }
 }
 
+void dijkstra_iterative(SLL head, const char *startSpotName, float **distanceMatrix) {
+    int len = length(head);
+
+    if (len == 0) {
+        printf("No spots to visit.\n");
+        return;
+    }
+
+    // Store all the spots in an array for easier access
+    SLL spots[len];
+    SLL temp = head;
+    for (int i = 0; i < len; i++) {
+        spots[i] = temp;
+        temp = temp->next;
+    }
+
+    // Convert the starting spot name to lowercase for case-insensitive comparison
+    char startSpotNameLower[MAX_CITY_NAME];
+    strcpy(startSpotNameLower, startSpotName);
+    toLowerCase(startSpotNameLower);
+
+    // Find the starting index based on the spot name
+    int startIndex = -1;
+    for (int i = 0; i < len; i++) {
+        char spotNameLower[MAX_CITY_NAME];
+        strcpy(spotNameLower, spots[i]->spotName);
+        toLowerCase(spotNameLower);
+
+        if (strcmp(spotNameLower, startSpotNameLower) == 0) {
+            startIndex = i;
+            break;
+        }
+    }
+
+    if (startIndex == -1) {
+        printf("Starting spot \"%s\" not found in the list.\n", startSpotName);
+        return;
+    }
+
+    // Initialize the visited array
+    int visited[len];
+    for (int i = 0; i < len; i++) {
+        visited[i] = 0;  // Initially, all spots are unvisited
+    }
+
+    // Start from the user-defined starting spot
+    int currentSpot = startIndex;
+    visited[currentSpot] = 1;  // Mark the starting spot as visited
+
+    printf("Starting at: %s\n", spots[currentSpot]->spotName);
+
+    // Visit all spots one by one based on the shortest path
+    for (int count = 0; count < len - 1; count++) {
+        // Find the nearest unvisited spot
+        float minDist = INT_MAX;
+        int nextSpot = -1;
+
+        for (int i = 0; i < len; i++) {
+            if (!visited[i] && distanceMatrix[currentSpot][i] != -1 && distanceMatrix[currentSpot][i] < minDist) {
+                minDist = distanceMatrix[currentSpot][i];
+                nextSpot = i;
+            }
+        }
+
+        if (nextSpot == -1) {
+            // No more unvisited spots reachable
+            break;
+        }
+
+        // Mark the next spot as visited and move there
+        visited[nextSpot] = 1;
+        printf("Next stop: %s (Distance: %.2f)\n", spots[nextSpot]->spotName, minDist);
+        
+        // Print the path from the current spot to the next spot
+        printf("Path: %s -> %s\n", spots[currentSpot]->spotName, spots[nextSpot]->spotName);
+
+        // Update the current spot to the next one
+        currentSpot = nextSpot;
+    }
+
+    // After all spots are visited, find and display the farthest spot
+    float maxDist = -1.0;
+    int farthestSpot = -1;
+    for (int i = 0; i < len; i++) {
+        if (distanceMatrix[startIndex][i] > maxDist) {
+            maxDist = distanceMatrix[startIndex][i];
+            farthestSpot = i;
+        }
+    }
+
+    if (farthestSpot != -1) {
+        printf("\nFarthest spot from %s is %s at a distance of %.2f\n", spots[startIndex]->spotName, spots[farthestSpot]->spotName, maxDist);
+    }
+}
+
 int main() {
     char cityName[MAX_CITY_NAME];
     printf("Enter the city name: ");
