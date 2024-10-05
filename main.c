@@ -392,35 +392,40 @@ int main() {
     char cityName[MAX_CITY_NAME];
     printf("Enter the city name: ");
     scanf("%[^\n]s", cityName);
-    getchar();  // Consume newline
+    getchar(); // Consume the newline
 
     char spotType[MAX_CITY_NAME];
-    printf("Enter the spot type (e.g., Historical Monument, Museum, Park, Religious Site, Shopping, etc.): ");
+    printf("Enter the spot type (e.g. Historical Monument, Museum, Park, Religious Site, Shopping, etc.): ");
     scanf("%[^\n]s", spotType);
-    getchar();  // Consume newline
+    getchar(); // Consume the newline
 
-    float rating;
+    float Rating;
     printf("Enter the rating above which you want spots: ");
-    scanf("%f", &rating);
+    scanf("%f", &Rating);
     getchar();  // Consume the newline character left by scanf
 
-    // Display tourist spots based on the user inputs (city, spot type, rating)
-    SLL touristSpots = displayTouristSpots(cityName, spotType, rating);
+    SLL touristSpots = displayTouristSpots(cityName, spotType, Rating);
     if (touristSpots != NULL) {
         printf("Tourist Spots in %s:\n", cityName);
-        printTouristSpots(touristSpots);  // Print the list of tourist spots
+        printTouristSpots(touristSpots);
 
         printf("\nCreating Distance Matrix...\n");
-        float **distanceMatrix = graphformation(touristSpots);  // Generate the distance matrix from the list
+        float **distanceMatrix = graphformation(touristSpots); // Assuming this returns the distance matrix
 
         // Get the starting spot name from the user
         char startSpotName[MAX_CITY_NAME];
         printf("Enter the starting spot name: ");
         scanf("%[^\n]s", startSpotName);
-        getchar();  // Consume newline
-
-        // Call the recursive Dijkstra function to visit all tourist spots
-        dijkstra_iterative_recursive(touristSpots, startSpotName, distanceMatrix);
+        
+        // Use a function to validate the startSpotName
+        // For example, you could implement:
+        // if (!isSpotFound(touristSpots, startSpotName)) {
+        //     printf("Starting spot \"%s\" not found in the list.\n", startSpotName);
+        //     return 1; // Exit if not found
+        // }
+        
+        // Start the modified Dijkstra's algorithm to visit all spots
+        dijkstra_iterative(touristSpots, startSpotName, distanceMatrix);
 
     } else {
         printf("No tourist spots found for the city: %s\n", cityName);
