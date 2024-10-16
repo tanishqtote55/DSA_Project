@@ -3,8 +3,10 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
+
 #define MAX_LINE_LENGTH 256
 #define MAX_CITY_NAME 100
+
 typedef struct node{
     char cityName[MAX_CITY_NAME];
     char spotName[MAX_CITY_NAME];
@@ -13,7 +15,9 @@ typedef struct node{
     char Latitude[20];
     struct node* next;
 }node;
+
 typedef node *SLL;
+
 int length(SLL head){
     int count = 0;
     node *temp = head;
@@ -23,11 +27,13 @@ int length(SLL head){
     }
     return count;
 }
+
 void toLowerCase(char *str) {
     for (int i = 0; str[i]; i++) {
         str[i] = tolower(str[i]);  
     }
 }
+
 // Function to create a new node
 SLL createNode(char *city, char *spot, float rating, char *longitude, char *latitude) {
     SLL newNode = (SLL)malloc(sizeof(node));
@@ -39,6 +45,7 @@ SLL createNode(char *city, char *spot, float rating, char *longitude, char *lati
     newNode->next = NULL;
     return newNode;
 }
+
 // Function to add a new node to the linked list
 void addNode(SLL *head, SLL newNode) {
     if (*head == NULL) {
@@ -51,6 +58,7 @@ void addNode(SLL *head, SLL newNode) {
         temp->next = newNode;
     }
 }
+
 SLL displayTouristSpots(const char* cityName, const char* spotType, float Rating){
     FILE* file = fopen("./csv/tourist_spots.csv", "r");
     if(file == NULL){
@@ -110,6 +118,7 @@ SLL displayTouristSpots(const char* cityName, const char* spotType, float Rating
     fclose(file);
     return head;
 }
+
 void printTouristSpots(SLL head) {
     SLL temp = head;
     while (temp != NULL) {
@@ -146,7 +155,17 @@ SLL getNodeAt(SLL head, int index){
 }
 
 // Function to create the distance matrix (graph formation)
-void graphformation(SLL head){
+int graphformation(SLL head, const char* startingSpot){
+    SLL temp = head;
+    int index = 0;
+    float maxdistance = 0;
+    int endindex;
+    while(temp != NULL && strcmp(temp->spotName, startingSpot) != 0) {
+        temp = temp->next;
+        index++;
+    }
+
+
     int len = length(head);
     float arr[len][len];
     for (int i = 0; i < len; i++) {
@@ -167,18 +186,67 @@ void graphformation(SLL head){
         }
     }
 
-    // for(int i = 0; i < len; i++){
-    //     for(int j = i + 1; j < len; j++){
-            
-    //     }
-    // }
-
     printf("Distance Matrix:\n");
     for(int i = 0; i < len; i++){
         for(int j = 0; j < len; j++){
             printf("%.2f ", arr[i][j]);
         }
         printf("\n");
+    }
+
+    for(int i = 0; i < len; i++){
+        for(int j = 0; j < len; j++){
+            if(i == index || j == index){
+                if(maxdistance < arr[i][j]){
+                    maxdistance = arr[i][j];
+                    if(i == index){
+                        endindex = j;
+                    }else{
+                        endindex = i;
+                    }
+                }
+            }
+        }
+    }
+
+    return endindex;
+}
+
+void nodeAttaching(SLL head, const char* startingSpot){
+    int len = length(head);
+    float arr[len][len];
+    SLL temp = head;
+    int index = 0;
+    float maxdistance = 0;
+    int endindex;
+    while(temp != NULL && strcmp(temp->spotName, startingSpot) != 0) {
+        temp = temp->next;
+        index++;
+    }
+    for (int i = 0; i < len; i++) {
+        for (int j = 0; j < len; j++) {
+            arr[i][j] = 0.0;  // Optionally, you can initialize it like this in a loop
+        }
+    }
+    for(int i = 0; i < len; i++){
+        for(int j = i + 1; j < len; j++){
+            SLL spot1 = getNodeAt(head, i);
+            SLL spot2 = getNodeAt(head, j);
+            float distance = calculateDistance(atof(spot1->Latitude), atof(spot1->Longitude), atof(spot2->Latitude), atof(spot2->Longitude));
+            if(distance < 10.00){
+                arr[i][j] = distance;
+            }
+            // else if(i == index || j == index){
+            //     if(maxdistance < distance){
+            //         maxdistance = distance;
+            //         if(i != index){
+            //             endindex = i;
+            //         }else{
+            //             endindex = j;
+            //         }
+            //     }
+            // }
+        }
     }
 }
 
@@ -196,14 +264,24 @@ int main(){
     float Rating;
     printf("Enter the rating above which you want spots: ");
     scanf("%f", &Rating);
+    getchar();
 
     SLL touristSpots = displayTouristSpots(cityName, spotType, Rating);
     if(touristSpots != NULL){
         printf("Tourist Spots in %s:\n", cityName);
         printTouristSpots(touristSpots);
 
+        char startingSpot[MAX_CITY_NAME];
+        printf("Enter the starting spot name: ");
+        scanf("%[^\n]s", startingSpot);
+        getchar();
+
+        int endindex;
+
         printf("\nCreating Distance Matrix...\n");
-        graphformation(touristSpots);
+        endindex = graphformation(touristSpots, startingSpot);
+
+        printf("endindex is : %d", endindex);
     }else{
         printf("No tourist spots found for the city: %s\n", cityName);
     }
