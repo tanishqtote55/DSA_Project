@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
+#include <limits.h>
 
 #define MAX_LINE_LENGTH 256
 #define MAX_CITY_NAME 100
@@ -155,98 +156,244 @@ SLL getNodeAt(SLL head, int index){
 }
 
 // Function to create the distance matrix (graph formation)
-int graphformation(SLL head, const char* startingSpot){
+float** graphformation(SLL head) {
+    int len = length(head);
+    
+    SLL spots[len];  // Allocate space for storing node pointers
+
+    // Store all the nodes in the array for easier access
     SLL temp = head;
-    int index = 0;
-    float maxdistance = 0;
-    int endindex;
-    while(temp != NULL && strcmp(temp->spotName, startingSpot) != 0) {
+    for (int i = 0; i < len; i++) {
+        spots[i] = temp;
         temp = temp->next;
-        index++;
     }
 
+    // Initialize the distance matrix
+    float **arr = malloc(len * sizeof(float *));
+    for (int i = 0; i < len; i++) {
+        arr[i] = malloc(len * sizeof(float));
+    }
 
-    int len = length(head);
-    float arr[len][len];
     for (int i = 0; i < len; i++) {
         for (int j = 0; j < len; j++) {
-            arr[i][j] = 0.0;  // Optionally, you can initialize it like this in a loop
-        }
-    }
-    for(int i = 0; i < len; i++){
-        for(int j = i + 1; j < len; j++){
-            SLL spot1 = getNodeAt(head, i);
-            SLL spot2 = getNodeAt(head, j);
-            if(i != j){
-                SLL spot1 = getNodeAt(head, i);
-                SLL spot2 = getNodeAt(head, j);
-                arr[i][j] = calculateDistance(atof(spot1->Latitude), atof(spot1->Longitude), atof(spot2->Latitude), atof(spot2->Longitude));
-                arr[j][i] = arr[i][j];
-            }       
+            arr[i][j] = (i == j) ? 0.0 : -1.0;  // Initialize diagonals to 0 and others to -1 (uninitialized)
         }
     }
 
+    // Compute distances only for i != j
+    for (int i = 0; i < len; i++) {
+        for (int j = i + 1; j < len; j++) {
+            SLL spot1 = spots[i];
+            SLL spot2 = spots[j];
+            
+            float dist = calculateDistance(atof(spot1->Latitude), atof(spot1->Longitude), atof(spot2->Latitude), atof(spot2->Longitude));
+            arr[i][j] = dist;
+            arr[j][i] = dist;  // Symmetric matrix
+        }
+    }
+
+    // Print the distance matrix
     printf("Distance Matrix:\n");
-    for(int i = 0; i < len; i++){
-        for(int j = 0; j < len; j++){
-            printf("%.2f ", arr[i][j]);
+    for (int i = 0; i < len; i++) {
+        for (int j = 0; j < len; j++) {
+            if (arr[i][j] >= 0) {
+                printf("%.2f ", arr[i][j]);
+            } else {
+                printf("N/A ");  // For uninitialized or invalid distances
+            }
         }
         printf("\n");
     }
 
-    for(int i = 0; i < len; i++){
-        for(int j = 0; j < len; j++){
-            if(i == index || j == index){
-                if(maxdistance < arr[i][j]){
-                    maxdistance = arr[i][j];
-                    if(i == index){
-                        endindex = j;
-                    }else{
-                        endindex = i;
-                    }
-                }
-            }
-        }
-    }
-
-    return endindex;
+    return arr;  // Return the distance matrix
 }
 
-void nodeAttaching(SLL head, const char* startingSpot){
-    int len = length(head);
-    float arr[len][len];
-    SLL temp = head;
-    int index = 0;
-    float maxdistance = 0;
-    int endindex;
-    while(temp != NULL && strcmp(temp->spotName, startingSpot) != 0) {
-        temp = temp->next;
-        index++;
-    }
+// void dijkstra_iterative_recursive(SLL head, const char *startSpotName, float **distanceMatrix) {
+//     int len = length(head);
+
+//     if (len == 0) {
+//         printf("No spots to visit.\n");
+//         return;
+//     }
+
+//     // Store all the spots in an array for easier access
+//     SLL spots[len];
+//     SLL temp = head;
+//     for (int i = 0; i < len; i++) {
+//         spots[i] = temp;
+//         temp = temp->next;
+//     }
+
+//     // Convert the starting spot name to lowercase for case-insensitive comparison
+//     char startSpotNameLower[MAX_CITY_NAME];
+//     strcpy(startSpotNameLower, startSpotName);
+//     toLowerCase(startSpotNameLower);
+
+//     // Find the starting index based on the spot name
+//     int startIndex = -1;
+//     for (int i = 0; i < len; i++) {
+//         char spotNameLower[MAX_CITY_NAME];
+//         strcpy(spotNameLower, spots[i]->spotName);
+//         toLowerCase(spotNameLower);
+
+//         if (strcmp(spotNameLower, startSpotNameLower) == 0) {
+//             startIndex = i;
+//             break;
+//         }
+//     }
+
+//     if (startIndex == -1) {
+//         printf("Starting spot \"%s\" not found in the list.\n", startSpotName);
+//         return;
+//     }
+
+//     // Initialize the visited array
+//     int visited[len];
+//     for (int i = 0; i < len; i++) {
+//         visited[i] = 0;  // Initially, all spots are unvisited
+//     }
+
+//     // Helper function to recursively visit all nodes
+//     void visitNodes(int currentSpot) {
+//         visited[currentSpot] = 1;  // Mark the current spot as visited
+
+//         printf("Visiting: %s\n", spots[currentSpot]->spotName);
+
+//         // Find the nearest unvisited spot from the current spot
+//         float minDist = INT_MAX;
+//         int nextSpot = -1;
+
+//         for (int i = 0; i < len; i++) {
+//             if (!visited[i] && distanceMatrix[currentSpot][i] != -1 && distanceMatrix[currentSpot][i] < minDist) {
+//                 minDist = distanceMatrix[currentSpot][i];
+//                 nextSpot = i;
+//             }
+//         }
+
+//         if (nextSpot == -1) {
+//             // No more unvisited spots reachable
+//             printf("All spots visited or no more reachable spots.\n");
+//             return;
+//         }
+
+//         // Print the path and distance from the current spot to the next spot
+//         printf("Next stop: %s (Distance: %.2f)\n", spots[nextSpot]->spotName, minDist);
+//         printf("Path: %s -> %s\n", spots[currentSpot]->spotName, spots[nextSpot]->spotName);
+
+//         // Call Dijkstra again starting from the next spot recursively
+//         visitNodes(nextSpot);
+//     }
+
+//     // Start visiting nodes from the user-defined starting spot
+//     visitNodes(startIndex);
+
+//     // After all spots are visited, find and display the farthest spot
+//     float maxDist = -1.0;
+//     int farthestSpot = -1;
+//     for (int i = 0; i < len; i++) {
+//         if (distanceMatrix[startIndex][i] > maxDist) {
+//             maxDist = distanceMatrix[startIndex][i];
+//             farthestSpot = i;
+//         }
+//     }
+
+//     if (farthestSpot != -1) {
+//         printf("\nFarthest spot from %s is %s at a distance of %.2f\n", spots[startIndex]->spotName, spots[farthestSpot]->spotName, maxDist);
+//     }
+// }
+
+// Recursive function to visit all nodes
+
+void visitNodes(SLL spots[], float **distanceMatrix, int len, int visited[], int currentSpot) {
+    visited[currentSpot] = 1; // Mark the current spot as visited
+
+    printf("Visiting: %s\n", spots[currentSpot]->spotName);
+
+    // Find the nearest unvisited spot from the current spot
+    float minDist = INT_MAX;
+    int nextSpot = -1;
+
     for (int i = 0; i < len; i++) {
-        for (int j = 0; j < len; j++) {
-            arr[i][j] = 0.0;  // Optionally, you can initialize it like this in a loop
+        if (!visited[i] && distanceMatrix[currentSpot][i] != -1 && distanceMatrix[currentSpot][i] < minDist) {
+            minDist = distanceMatrix[currentSpot][i];
+            nextSpot = i;
         }
     }
-    for(int i = 0; i < len; i++){
-        for(int j = i + 1; j < len; j++){
-            SLL spot1 = getNodeAt(head, i);
-            SLL spot2 = getNodeAt(head, j);
-            float distance = calculateDistance(atof(spot1->Latitude), atof(spot1->Longitude), atof(spot2->Latitude), atof(spot2->Longitude));
-            if(distance < 10.00){
-                arr[i][j] = distance;
-            }
-            // else if(i == index || j == index){
-            //     if(maxdistance < distance){
-            //         maxdistance = distance;
-            //         if(i != index){
-            //             endindex = i;
-            //         }else{
-            //             endindex = j;
-            //         }
-            //     }
-            // }
+
+    if (nextSpot == -1) {
+        // No more unvisited spots reachable
+        printf("All spots visited or no more reachable spots.\n");
+        return;
+    }
+
+    // Print the path and distance from the current spot to the next spot
+    printf("Next stop: %s (Distance: %.2f)\n", spots[nextSpot]->spotName, minDist);
+    printf("Path: %s -> %s\n", spots[currentSpot]->spotName, spots[nextSpot]->spotName);
+
+    // Call recursively for the next spot
+    visitNodes(spots, distanceMatrix, len, visited, nextSpot);
+}
+
+void dijkstra_iterative_recursive(SLL head, const char *startSpotName, float **distanceMatrix) {
+    int len = length(head);
+
+    if (len == 0) {
+        printf("No spots to visit.\n");
+        return;
+    }
+
+    // Store all the spots in an array for easier access
+    SLL spots[len];
+    SLL temp = head;
+    for (int i = 0; i < len; i++) {
+        spots[i] = temp;
+        temp = temp->next;
+    }
+
+    // Convert the starting spot name to lowercase for case-insensitive comparison
+    char startSpotNameLower[MAX_CITY_NAME];
+    strcpy(startSpotNameLower, startSpotName);
+    toLowerCase(startSpotNameLower);
+
+    // Find the starting index based on the spot name
+    int startIndex = -1;
+    for (int i = 0; i < len; i++) {
+        char spotNameLower[MAX_CITY_NAME];
+        strcpy(spotNameLower, spots[i]->spotName);
+        toLowerCase(spotNameLower);
+
+        if (strcmp(spotNameLower, startSpotNameLower) == 0) {
+            startIndex = i;
+            break;
         }
+    }
+
+    if (startIndex == -1) {
+        printf("Starting spot \"%s\" not found in the list.\n", startSpotName);
+        return;
+    }
+
+    // Initialize the visited array
+    int visited[len];
+    for (int i = 0; i < len; i++) {
+        visited[i] = 0;  // Initially, all spots are unvisited
+    }
+
+    // Start visiting nodes from the user-defined starting spot
+    visitNodes(spots, distanceMatrix, len, visited, startIndex);
+
+    // After all spots are visited, find and display the farthest spot
+    float maxDist = -1.0;
+    int farthestSpot = -1;
+    for (int i = 0; i < len; i++) {
+        if (distanceMatrix[startIndex][i] > maxDist) {
+            maxDist = distanceMatrix[startIndex][i];
+            farthestSpot = i;
+        }
+    }
+
+    if (farthestSpot != -1) {
+        printf("\nFarthest spot from %s is %s at a distance of %.2f\n", spots[startIndex]->spotName, spots[farthestSpot]->spotName, maxDist);
     }
 }
 
@@ -254,34 +401,44 @@ int main(){
     char cityName[MAX_CITY_NAME];
     printf("Enter the city name: ");
     scanf("%[^\n]s", cityName);
-    getchar();
+    getchar();  // Consume the new line
 
     char spotType[MAX_CITY_NAME];
     printf("Enter the spot type (e.g. Historical Monument, Museum, Park, Religious Site, Shopping, etc.): ");
     scanf("%[^\n]s", spotType);
-    getchar();
+    getchar();  // Consume the new line
 
     float Rating;
     printf("Enter the rating above which you want spots: ");
     scanf("%f", &Rating);
-    getchar();
+    getchar(); // Consume the new line
 
     SLL touristSpots = displayTouristSpots(cityName, spotType, Rating);
     if(touristSpots != NULL){
         printf("Tourist Spots in %s:\n", cityName);
         printTouristSpots(touristSpots);
 
-        char startingSpot[MAX_CITY_NAME];
+        printf("\nCreating Distance Matrix...\n");
+        float **distanceMatrix = graphformation(touristSpots); // Assuming this returns the distance matrix
+
+        // Get the starting spot name from the user
+        char startSpotName[MAX_CITY_NAME];
         printf("Enter the starting spot name: ");
-        scanf("%[^\n]s", startingSpot);
-        getchar();
+        scanf("%[^\n]s", startSpotName);
+
+        // Use a function to validate the startSpotName
+        // For example, you could implement:
+        // if (!isSpotFound(touristSpots, startSpotName)) {
+        //     printf("Starting spot \"%s\" not found in the list.\n", startSpotName);
+        //     return 1; // Exit if not found
+        // }
 
         int endindex;
 
         printf("\nCreating Distance Matrix...\n");
-        endindex = graphformation(touristSpots, startingSpot);
+        
+        dijkstra_iterative_recursive(touristSpots, startSpotName, distanceMatrix);
 
-        printf("endindex is : %d", endindex);
     }else{
         printf("No tourist spots found for the city: %s\n", cityName);
     }
