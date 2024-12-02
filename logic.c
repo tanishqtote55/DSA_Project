@@ -316,3 +316,43 @@ void printShortestPath(SLL shortestPath){
     }
     printf("End\n");
 }
+
+
+// Function to calculate the total distance of the shortest path
+float calculateTotalDistance(SLL shortestPath, float **distanceMatrix, SLL touristSpots) {
+    float totalDistance = 0.0;
+    
+    if (shortestPath == NULL || shortestPath->next == NULL) {
+        return totalDistance;  // If there's no valid path, the total distance is 0
+    }
+    
+    SLL current = shortestPath;
+    
+    // Traverse the linked list and sum the distances between consecutive spots
+    while (current != NULL && current->next != NULL) {
+        int currentIndex = getNodeIndex(touristSpots, current);
+        int nextIndex = getNodeIndex(touristSpots, current->next);
+        
+        if (currentIndex != -1 && nextIndex != -1) {
+            totalDistance += distanceMatrix[currentIndex][nextIndex];
+        }
+        
+        current = current->next;
+    }
+
+    return totalDistance;
+}
+
+// Function to get the index of a node in the shortest path linked list
+int getNodeIndex(SLL touristSpots, SLL node) {
+    int index = 0;
+    SLL temp = touristSpots;
+    while (temp != NULL) {
+        if (strcmp(temp->spotName, node->spotName) == 0) {  // Compare based on spotName
+            return index;
+        }
+        temp = temp->next;
+        index++;
+    }
+    return -1;  // Node not found
+}

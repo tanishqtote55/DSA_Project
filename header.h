@@ -31,3 +31,5 @@ SLL getNodeAt(SLL head, int index);
 float** graphformation(SLL head);
 SLL dijkstra_iterative(SLL head, const char *startSpotName, float **distanceMatrix);
 void printShortestPath(SLL shortestPath);
+int getNodeIndex(SLL touristSpots, SLL node);
+float calculateTotalDistance(SLL shortestPath, float **distanceMatrix, SLL touristSpots);
