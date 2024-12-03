@@ -44,6 +44,10 @@ int main(){
 
         float totalDistance = calculateTotalDistance(shortestPath, distanceMatrix, touristSpots);
         printf("\nTotal distance traveled: %.2f km\n", totalDistance);
+        int days;
+        printf("Enter the number of days: ");
+        scanf("%d", &days);
+        generateItinerary(shortestPath, days);
 
     } else {
         printf("No tourist spots found for the city: %s\n", cityName);

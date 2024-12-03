@@ -356,3 +356,70 @@ int getNodeIndex(SLL touristSpots, SLL node) {
     }
     return -1;  // Node not found
 }
+
+#include <string.h>
+
+// Function to check if the spot is found in the tourist spots list
+int isSpotFound(SLL touristSpots, const char *startSpotName) {
+    SLL temp = touristSpots;
+    while (temp != NULL) {
+        if (strcmp(temp->spotName, startSpotName) == 0) {
+            return 1; // Spot found
+        }
+        temp = temp->next;
+    }
+    return 0; // Spot not found
+}
+
+
+// Function to generate an itinerary based on days and linked list of spots
+void generateItinerary(SLL head, int days) {
+    // Validate the number of days
+    if (days > 5) {
+        printf("Error: Not enough spots for more than 5 days of travel.\n");
+        return;
+    }
+
+    // Total spots in the linked list
+    int totalSpots = length(head);
+
+    // Calculate spots per day (even distribution)
+    int spotsPerDay = totalSpots / days;
+    if (spotsPerDay == 0) {
+        printf("Error: Not enough spots for the requested number of days.\n");
+        return;
+    }
+
+    // Assign time slots for each spot
+    char* timeSlots[] = {"10:00 AM - 12:00 PM", "12:00 PM - 01:00 PM (Lunch)", 
+                         "01:00 PM - 03:00 PM", "03:00 PM - 05:00 PM", 
+                         "05:00 PM - 07:00 PM"};
+
+    SLL temp = head;
+    for (int day = 1; day <= days; day++) {
+        printf("Day %d Itinerary:\n", day);
+
+        // Include breakfast at the start of the day
+        printf("  08:00 AM - 09:00 AM: Breakfast\n");
+
+        // Include spots for the day
+        for (int i = 0; i < spotsPerDay && temp != NULL; i++) {
+            printf("  %s: Visit %s (Rating: %.2f)\n", timeSlots[i % 5], temp->spotName, temp->rating);
+            temp = temp->next;
+        }
+
+        // Include dinner at the end of the day
+        printf("  07:00 PM - 08:00 PM: Dinner\n");
+
+        printf("\n");
+    }
+
+    // If any spots remain, print them as "extra spots"
+    if (temp != NULL) {
+        printf("Extra spots not covered in the itinerary:\n");
+        while (temp != NULL) {
+            printf("  %s (Rating: %.2f)\n", temp->spotName, temp->rating);
+            temp = temp->next;
+        }
+    }
+}
