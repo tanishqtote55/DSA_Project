@@ -1,75 +1,57 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-
-#define MAX_LINE_LENGTH 256
-#define MAX_CITY_NAME 100
-
-void toLowerCase(char *str) {
-    for (int i = 0; str[i]; i++) {
-        str[i] = tolower(str[i]);  
-    }
-}
-
-void displayTouristSpots(const char* cityName){
-    FILE* file = fopen("./csv/tourist_spots.csv", "r");
-    if(file == NULL){
-        printf("Error Opening File\n");
-        return;
-    }
-    char line[MAX_LINE_LENGTH];
-    char *token;
-
-    fgets(line, sizeof(line), file);
-
-    while(fgets(line, sizeof(line), file)){
-        char city[MAX_CITY_NAME];
-        char spotName[100], type[50], longitude[20], latitude[20];
-        float rating;
-
-        token = strtok(line, ","); 
-        strcpy(city, token);
-
-        token = strtok(NULL, ",");
-        strcpy(spotName, token);
-
-        token = strtok(NULL, ",");
-        rating = atof(token);
-
-        token = strtok(NULL, ",");
-        strcpy(type, token); 
-
-        token = strtok(NULL, ",");
-        strcpy(longitude, token);
-
-        token = strtok(NULL, ",");
-        strcpy(latitude, token);
-
-        latitude[strcspn(latitude, "\n")] = '\0';
-        char cityLower[MAX_CITY_NAME];
-        strcpy(cityLower, city);
-        toLowerCase(cityLower);
-        char cityNameLower[MAX_CITY_NAME];
-        strcpy(cityNameLower, cityName);
-        toLowerCase(cityNameLower);
-
-        if(strcmp(cityLower, cityNameLower) == 0){
-            printf("%s", city);
-            printf(" %s", spotName);
-            printf(" %.2f", rating);
-            printf(" %s", type);
-            printf(" %s", longitude);
-            printf(" %s\n", latitude);
-        }
-    }
-    fclose(file);
-}
+#include "header.h"
 
 int main(){
     char cityName[MAX_CITY_NAME];
     printf("Enter the city name: ");
-    scanf("%99s", cityName);
-    displayTouristSpots(cityName);
+    scanf("%[^\n]s", cityName);
+    getchar(); // Consume the newline
+
+    char spotType[MAX_CITY_NAME];
+    printf("Enter the spot type (e.g. Historical Monument, Museum, Park, Religious Site, Shopping, etc.): ");
+    scanf("%[^\n]s", spotType);
+    getchar(); // Consume the newline
+
+    float Rating;
+    printf("Enter the rating above which you want spots: ");
+    scanf("%f", &Rating);
+    getchar();  // Consume the newline character left by scanf
+
+    SLL touristSpots = displayTouristSpots(cityName, spotType, Rating);
+    if (touristSpots != NULL) {
+        printf("Tourist Spots in %s:\n", cityName);
+        printTouristSpots(touristSpots);
+
+        printf("\nCreating Distance Matrix...\n");
+        float **distanceMatrix = graphformation(touristSpots); // Assuming this returns the distance matrix
+
+        // Get the starting spot name from the user
+        char startSpotName[MAX_CITY_NAME];
+        printf("Enter the starting spot name: ");
+        scanf("%[^\n]s", startSpotName);
+        
+        // Use a function to validate the startSpotName
+        // For example, you could implement:
+        // if (!isSpotFound(touristSpots, startSpotName)) {
+        //     printf("Starting spot \"%s\" not found in the list.\n", startSpotName);
+        //     return 1; // Exit if not found
+        // }
+        
+        // Start the modified Dijkstra's algorithm to visit all spots
+        SLL shortestPath = dijkstra_iterative(touristSpots, startSpotName, distanceMatrix);
+
+        // Display the shortest path
+        printShortestPath(shortestPath);
+
+        float totalDistance = calculateTotalDistance(shortestPath, distanceMatrix, touristSpots);
+        printf("\nTotal distance traveled: %.2f km\n", totalDistance);
+        int days;
+        printf("Enter the number of days: ");
+        scanf("%d", &days);
+        generateItinerary(shortestPath, days);
+
+    } else {
+        printf("No tourist spots found for the city: %s\n", cityName);
+    }
+
     return 0;
 }
