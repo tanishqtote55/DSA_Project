@@ -36,4 +36,5 @@ void printShortestPath(SLL shortestPath);
 int getNodeIndex(SLL touristSpots, SLL node);
 int isSpotFound(SLL touristSpots, const char *startSpotName);
 float calculateTotalDistance(SLL shortestPath, float **distanceMatrix, SLL touristSpots);
+void displayTime(int hour, int minute);
 void generateItinerary(SLL head, int days);
