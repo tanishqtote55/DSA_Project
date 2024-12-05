@@ -7,19 +7,26 @@
 
 #define MAX_LINE_LENGTH 256
 #define MAX_CITY_NAME 100
+#define MAX_REVIEW_TEXT 500
+#define MAX_REVIEWS 100
 
-typedef struct node{
+typedef struct review {
+    float rating;
+    char reviewText[MAX_REVIEW_TEXT];
+    struct review* next;
+} review;
+
+typedef struct node {
     char cityName[MAX_CITY_NAME];
     char spotName[MAX_CITY_NAME];
     float rating;
     char Longitude[20];
     char Latitude[20];
+    review* reviews;  // Linked list of reviews for this spot
     struct node* next;
-}node;
+} node;
 
 typedef node *SLL;
-
-
 int length(SLL head);
 void toLowerCase(char *str);
 SLL createNode(char *city, char *spot, float rating, char *longitude, char *latitude);
@@ -34,4 +41,11 @@ void printShortestPath(SLL shortestPath);
 int getNodeIndex(SLL touristSpots, SLL node);
 int isSpotFound(SLL touristSpots, const char *startSpotName);
 float calculateTotalDistance(SLL shortestPath, float **distanceMatrix, SLL touristSpots);
+void displayTime(int hour, int minute);
 void generateItinerary(SLL head, int days);
+
+void addReview(SLL spot, float rating, const char* reviewText);
+void displayReviews(SLL spot);
+void saveReviewsToCSV(SLL head);
+SLL loadReviewsFromCSV(SLL head);
+float calculateAverageRating(SLL spot);
