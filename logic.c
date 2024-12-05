@@ -357,8 +357,6 @@ int getNodeIndex(SLL touristSpots, SLL node) {
     return -1;  // Node not found
 }
 
-#include <string.h>
-
 // Function to check if the spot is found in the tourist spots list
 int isSpotFound(SLL touristSpots, const char *startSpotName) {
     SLL temp = touristSpots;
@@ -371,8 +369,12 @@ int isSpotFound(SLL touristSpots, const char *startSpotName) {
     return 0; // Spot not found
 }
 
+// Helper function to display time in HH:MM format
+void displayTime(int hour, int minute) {
+    printf("%02d:%02d", hour, minute);
+}
 
-// Function to generate an itinerary based on days and linked list of spots
+// Function to generate itinerary
 void generateItinerary(SLL head, int days) {
     // Validate the number of days
     if (days > 5) {
@@ -390,26 +392,71 @@ void generateItinerary(SLL head, int days) {
         return;
     }
 
-    // Assign time slots for each spot
-    char* timeSlots[] = {"10:00 AM - 12:00 PM", "12:00 PM - 01:00 PM (Lunch)", 
-                         "01:00 PM - 03:00 PM", "03:00 PM - 05:00 PM", 
-                         "05:00 PM - 07:00 PM"};
+    // Warning if spots exceed 5 in a day
+    if (spotsPerDay > 5) {
+        printf("Warning: More than 5 spots in a day. You may not fully enjoy all stops.\n");
+    }
 
     SLL temp = head;
     for (int day = 1; day <= days; day++) {
         printf("Day %d Itinerary:\n", day);
 
-        // Include breakfast at the start of the day
-        printf("  08:00 AM - 09:00 AM: Breakfast\n");
+        // Start time for the day
+        int hour = 8, minute = 0;
 
-        // Include spots for the day
+        // Include breakfast at the start of the day
+        displayTime(hour, minute);
+        printf(" - ");
+        displayTime(hour + 1, minute);
+        printf(": Breakfast\n");
+
+        // Update time to 9:00 AM after breakfast
+        hour += 1;
+
         for (int i = 0; i < spotsPerDay && temp != NULL; i++) {
-            printf("  %s: Visit %s (Rating: %.2f)\n", timeSlots[i % 5], temp->spotName, temp->rating);
+            float timeSpent;
+
+            // Input time spent at the current spot
+            printf("Enter the time (in hours) you want to spend at %s: ", temp->spotName);
+            scanf("%f", &timeSpent);
+
+            // Print the visit details
+            displayTime(hour, minute);
+            printf(" - ");
+            hour += (int)timeSpent;
+            minute += (int)((timeSpent - (int)timeSpent) * 60);
+            if (minute >= 60) {
+                hour += minute / 60;
+                minute %= 60;
+            }
+            displayTime(hour, minute);
+            printf(": Visit %s (Rating: %.2f) for %.2f hours\n", temp->spotName, temp->rating, timeSpent);
+
+            // Check if there's another spot for travel
+            if (temp->next != NULL && i < spotsPerDay - 1) {
+                float travelTime = 1.25; // Example fixed travel time
+                printf("  Travel from %s to %s: %.2f hours\n", temp->spotName, temp->next->spotName, travelTime);
+
+                // Update time with travel time
+                hour += (int)travelTime;
+                minute += (int)((travelTime - (int)travelTime) * 60);
+                if (minute >= 60) {
+                    hour += minute / 60;
+                    minute %= 60;
+                }
+            }
+
+            // Move to the next spot
             temp = temp->next;
         }
 
         // Include dinner at the end of the day
-        printf("  07:00 PM - 08:00 PM: Dinner\n");
+        hour = 19; // 7:00 PM
+        minute = 0;
+        displayTime(hour, minute);
+        printf(" - ");
+        displayTime(hour + 1, minute);
+        printf(": Dinner\n");
 
         printf("\n");
     }
@@ -421,5 +468,188 @@ void generateItinerary(SLL head, int days) {
             printf("  %s (Rating: %.2f)\n", temp->spotName, temp->rating);
             temp = temp->next;
         }
+    } else {
+        printf("Extra spots not covered in the itinerary:\n  None\n");
     }
+}
+
+
+// Function to add a review to a specific spot
+void addReview(SLL spot, float rating, const char* reviewText) {
+    if (spot == NULL) {
+        printf("Error: Cannot add review to a null spot.\n");
+        return;
+    }
+
+    // Create a new review node
+    review* newReview = (review*)malloc(sizeof(review));
+    newReview->rating = rating;
+    strncpy(newReview->reviewText, reviewText, MAX_REVIEW_TEXT - 1);
+    newReview->reviewText[MAX_REVIEW_TEXT - 1] = '\0';  // Ensure null-termination
+    newReview->next = NULL;
+
+    // Add the review to the spot's review list
+    if (spot->reviews == NULL) {
+        spot->reviews = newReview;
+    } else {
+        review* temp = spot->reviews;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        temp->next = newReview;
+    }
+}
+
+// Function to display reviews for a specific spot
+void displayReviews(SLL spot) {
+    if (spot == NULL) {
+        printf("Error: Spot is null.\n");
+        return;
+    }
+
+    printf("Reviews for %s, %s:\n", spot->cityName, spot->spotName);
+    
+    if (spot->reviews == NULL) {
+        printf("No reviews yet.\n");
+        return;
+    }
+
+    review* temp = spot->reviews;
+    int reviewCount = 0;
+    while (temp != NULL) {
+        reviewCount++;
+        printf("Review %d:\n", reviewCount);
+        printf("  Rating: %.1f/5.0\n", temp->rating);
+        printf("  Comment: %s\n\n", temp->reviewText);
+        temp = temp->next;
+    }
+
+    // Calculate and display average rating
+    float avgRating = calculateAverageRating(spot);
+    printf("Average Rating: %.2f/5.0\n", avgRating);
+}
+
+// Function to calculate average rating for a spot
+float calculateAverageRating(SLL spot) {
+    if (spot == NULL || spot->reviews == NULL) {
+        return 0.0;
+    }
+
+    float totalRating = 0.0;
+    int count = 0;
+    review* temp = spot->reviews;
+    
+    while (temp != NULL) {
+        totalRating += temp->rating;
+        count++;
+        temp = temp->next;
+    }
+
+    return (count > 0) ? (totalRating / count) : 0.0;
+}
+
+// Function to save reviews to a CSV file
+void saveReviewsToCSV(SLL head) {
+    FILE* file = fopen("./csv/spot-reviews-csv.csv", "w");
+    if (file == NULL) {
+        printf("Error: Could not open file for writing reviews.\n");
+        return;
+    }
+
+    // Write CSV header
+    fprintf(file, "City,Spot Name,Rating,Review Text\n");
+
+    // Traverse through all spots
+    SLL currentSpot = head;
+    while (currentSpot != NULL) {
+        review* currentReview = currentSpot->reviews;
+        
+        // Write all reviews for this spot
+        while (currentReview != NULL) {
+            // Escape any commas in the review text to prevent CSV parsing issues
+            char escapedReview[MAX_REVIEW_TEXT];
+            strcpy(escapedReview, currentReview->reviewText);
+            for (int i = 0; escapedReview[i] != '\0'; i++) {
+                if (escapedReview[i] == ',') {
+                    escapedReview[i] = ';';
+                }
+            }
+
+            fprintf(file, "%s,%s,%.1f,\"%s\"\n", 
+                    currentSpot->cityName, 
+                    currentSpot->spotName, 
+                    currentReview->rating, 
+                    escapedReview);
+            
+            currentReview = currentReview->next;
+        }
+
+        currentSpot = currentSpot->next;
+    }
+
+    fclose(file);
+    printf("Reviews saved successfully.\n");
+}
+
+// Function to load reviews from CSV
+SLL loadReviewsFromCSV(SLL head) {
+    FILE* file = fopen("./csv/spot-reviews-csv.csv", "r");
+    if (file == NULL) {
+        printf("No existing reviews file found. Starting with empty reviews.\n");
+        return head;
+    }
+
+    // Skip header line
+    char line[MAX_LINE_LENGTH];
+    fgets(line, sizeof(line), file);
+
+    while (fgets(line, sizeof(line), file)) {
+        char city[MAX_CITY_NAME];
+        char spotName[MAX_CITY_NAME];
+        float rating;
+        char reviewText[MAX_REVIEW_TEXT];
+
+        // Parse CSV line
+        char* token = strtok(line, ",");
+        strcpy(city, token);
+
+        token = strtok(NULL, ",");
+        strcpy(spotName, token);
+
+        token = strtok(NULL, ",");
+        rating = atof(token);
+
+        // Handle review text (which might contain commas)
+        token = strtok(NULL, "\n");
+        // Remove quotes if present
+        if (token[0] == '"' && token[strlen(token)-1] == '"') {
+            strncpy(reviewText, token + 1, strlen(token) - 2);
+            reviewText[strlen(token) - 2] = '\0';
+        } else {
+            strcpy(reviewText, token);
+        }
+        
+        // Replace semicolons back to commas
+        for (int i = 0; reviewText[i] != '\0'; i++) {
+            if (reviewText[i] == ';') {
+                reviewText[i] = ',';
+            }
+        }
+
+        // Find the corresponding spot in the linked list
+        SLL currentSpot = head;
+        while (currentSpot != NULL) {
+            if (strcmp(currentSpot->cityName, city) == 0 && 
+                strcmp(currentSpot->spotName, spotName) == 0) {
+                // Add review to this spot
+                addReview(currentSpot, rating, reviewText);
+                break;
+            }
+            currentSpot = currentSpot->next;
+        }
+    }
+
+    fclose(file);
+    printf("Reviews loaded successfully.\n");
+    return head;
 }
