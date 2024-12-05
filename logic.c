@@ -43,24 +43,65 @@ void addNode(SLL *head, SLL newNode){
     }
 }
 
-// Function to Filters tourist spots from a CSV file based on city, type, and minimum rating, and returns a linked list of matching spots.
-SLL displayTouristSpots(const char* cityName, const char* spotType, float Rating){
-    FILE* file = fopen("./csv/tourist_spots.csv", "r");
-    if(file == NULL){
-        printf("Error Opening File\n");
-        return NULL;
+void trimWhitespace(char* str) {
+    char* start = str; // Pointer to the beginning of the string
+    char* end;
+
+    // Move the start pointer to the first non-space character
+    while (isspace((unsigned char)*start)) {
+        start++;
     }
-    SLL head = NULL;
+
+    // If the string is entirely spaces, set it to an empty string
+    if (*start == 0) {
+        str[0] = '\0';
+        return;
+    }
+
+    // Find the end of the string
+    end = start + strlen(start) - 1;
+
+    // Move the end pointer back to the last non-space character
+    while (end > start && isspace((unsigned char)*end)) {
+        end--;
+    }
+
+    // Null-terminate the trimmed string
+    *(end + 1) = '\0';
+
+    // Copy the trimmed string back to the original pointer
+    memmove(str, start, end - start + 2); // +2 to include null terminator
+}
+
+// Updated function to filter tourist spots based on multiple spot types
+SLL displayTouristSpots(SLL head, const char *cityName, const char *spotType, float Rating) {
+    FILE *file = fopen("./csv/tourist_spots.csv", "r");
+    if (file == NULL) {
+        printf("Error Opening File\n");
+        return head;  // Return current list without changes
+    }
+
     char line[MAX_LINE_LENGTH];
     char *token;
-    //Skip the header line
+
+    // Convert spotType and cityName to lowercase
+    char spotTypeLower[MAX_CITY_NAME];
+    strcpy(spotTypeLower, spotType);
+    toLowerCase(spotTypeLower);
+
+    char cityNameLower[MAX_CITY_NAME];
+    strcpy(cityNameLower, cityName);
+    toLowerCase(cityNameLower);
+
+    // Skip header
     fgets(line, sizeof(line), file);
-    while(fgets(line, sizeof(line), file)){
-        char city[MAX_CITY_NAME];
-        char spotName[100], type[50], longitude[20], latitude[20];
+
+    while (fgets(line, sizeof(line), file)) {
+        // Parse CSV line
+        char city[MAX_CITY_NAME], spotName[100], type[50], longitude[20], latitude[20];
         float rating;
 
-        token = strtok(line, ","); 
+        token = strtok(line, ",");
         strcpy(city, token);
 
         token = strtok(NULL, ",");
@@ -70,7 +111,7 @@ SLL displayTouristSpots(const char* cityName, const char* spotType, float Rating
         rating = atof(token);
 
         token = strtok(NULL, ",");
-        strcpy(type, token); 
+        strcpy(type, token);
 
         token = strtok(NULL, ",");
         strcpy(longitude, token);
@@ -80,28 +121,24 @@ SLL displayTouristSpots(const char* cityName, const char* spotType, float Rating
 
         latitude[strcspn(latitude, "\n")] = '\0';
 
-        char cityLower[MAX_CITY_NAME];
+        // Lowercase comparison
+        char cityLower[MAX_CITY_NAME], typeLower[MAX_CITY_NAME];
         strcpy(cityLower, city);
         toLowerCase(cityLower);
-        char cityNameLower[MAX_CITY_NAME];
-        strcpy(cityNameLower, cityName);
-        toLowerCase(cityNameLower);
 
-        char typeLower[MAX_CITY_NAME];
         strcpy(typeLower, type);
         toLowerCase(typeLower);
-        char spotTypeLower[MAX_CITY_NAME];
-        strcpy(spotTypeLower, spotType);
-        toLowerCase(spotTypeLower);
-        
 
-        if((strcmp(cityLower, cityNameLower) == 0) && (strcmp(typeLower, spotTypeLower) == 0) && Rating <= rating){
+        if ((strcmp(cityLower, cityNameLower) == 0) &&
+            (strcmp(typeLower, spotTypeLower) == 0) &&
+            (Rating <= rating)) {
             SLL newNode = createNode(city, spotName, rating, longitude, latitude);
             addNode(&head, newNode);
         }
     }
+
     fclose(file);
-    return head;
+    return head;  // Return the updated list
 }
 
 // Function ro print the tourist spots in the Linked List
@@ -386,7 +423,7 @@ void generateItinerary(SLL head, int days) {
     int totalSpots = length(head);
 
     // Calculate spots per day (even distribution)
-    int spotsPerDay = totalSpots / days;
+    int spotsPerDay = (totalSpots + 1)/ days;
     if (spotsPerDay == 0) {
         printf("Error: Not enough spots for the requested number of days.\n");
         return;

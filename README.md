@@ -6,3 +6,7 @@ Tasks
 3. To Display Name of Spots Based on City Name, Spot Name, Rating - TM
 4. To calculate distance between two nodes - YT 
 5. To make a graph based on starting spot and distances by 10km distance algorithm to connect nodes - TT
+
+
+
+
