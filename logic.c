@@ -392,3 +392,19 @@ SLL dijkstra_iterative(SLL head, const char *startSpotName, float **distanceMatr
     // Step 11: Return the linked list of the shortest path
     return shortestPath;
 }
+
+// Function to Print the Shortest Path Stored in the Linked List
+void printShortestPath(SLL shortestPath){
+    if (shortestPath == NULL) {
+        printf("No shortest path to display.\n");
+        return;
+    }
+
+    SLL temp = shortestPath;
+    printf("Shortest path: ");
+    while (temp != NULL) {
+        printf("%s -> ", temp->spotName); // You can modify this to print more details if needed.
+        temp = temp->next;
+    }
+    printf("End\n");
+}
