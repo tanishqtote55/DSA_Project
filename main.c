@@ -1,8 +1,5 @@
 #include "header.h"
 
-#define MAX_LINE_LENGTH 256
-#define MAX_CITY_NAME 100
-
 void toLowerCase(char *str) {
     for (int i = 0; str[i]; i++) {
         str[i] = tolower(str[i]);  
