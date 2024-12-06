@@ -414,22 +414,19 @@ void displayTime(int hour, int minute) {
 // Function to generate itinerary
 void generateItinerary(SLL head, int days) {
     // Validate the number of days
+    if (days <= 0) {
+        printf("Error: Number of days must be greater than zero.\n");
+        return;
+    }
     if (days > 5) {
         printf("Error: Not enough spots for more than 5 days of travel.\n");
         return;
     }
 
-    // Total spots in the linked list
+    // Calculate total spots and spots per day
     int totalSpots = length(head);
+    int spotsPerDay = (totalSpots + days - 1) / days; // Round up spots per day
 
-    // Calculate spots per day (even distribution)
-    int spotsPerDay = (totalSpots + 1)/ days;
-    if (spotsPerDay == 0) {
-        printf("Error: Not enough spots for the requested number of days.\n");
-        return;
-    }
-
-    // Warning if spots exceed 5 in a day
     if (spotsPerDay > 5) {
         printf("Warning: More than 5 spots in a day. You may not fully enjoy all stops.\n");
     }
@@ -441,13 +438,13 @@ void generateItinerary(SLL head, int days) {
         // Start time for the day
         int hour = 8, minute = 0;
 
-        // Include breakfast at the start of the day
+        // Breakfast included at the start of the day
         displayTime(hour, minute);
         printf(" - ");
         displayTime(hour + 1, minute);
         printf(": Breakfast\n");
 
-        // Update time to 9:00 AM after breakfast
+        // Update time to 9:00 AM
         hour += 1;
 
         for (int i = 0; i < spotsPerDay && temp != NULL; i++) {
@@ -457,19 +454,25 @@ void generateItinerary(SLL head, int days) {
             printf("Enter the time (in hours) you want to spend at %s: ", temp->spotName);
             scanf("%f", &timeSpent);
 
-            // Print the visit details
+            // Print visit details
             displayTime(hour, minute);
             printf(" - ");
             hour += (int)timeSpent;
             minute += (int)((timeSpent - (int)timeSpent) * 60);
+
+            // Handle time overflow
             if (minute >= 60) {
                 hour += minute / 60;
                 minute %= 60;
             }
+            if (hour >= 24) {
+                hour %= 24;
+            }
+
             displayTime(hour, minute);
             printf(": Visit %s (Rating: %.2f) for %.2f hours\n", temp->spotName, temp->rating, timeSpent);
 
-            // Check if there's another spot for travel
+            // Check if there is another spot for travel
             if (temp->next != NULL && i < spotsPerDay - 1) {
                 float travelTime = 1.25; // Example fixed travel time
                 printf("  Travel from %s to %s: %.2f hours\n", temp->spotName, temp->next->spotName, travelTime);
@@ -477,9 +480,13 @@ void generateItinerary(SLL head, int days) {
                 // Update time with travel time
                 hour += (int)travelTime;
                 minute += (int)((travelTime - (int)travelTime) * 60);
+
                 if (minute >= 60) {
                     hour += minute / 60;
                     minute %= 60;
+                }
+                if (hour >= 24) {
+                    hour %= 24;
                 }
             }
 
@@ -487,18 +494,10 @@ void generateItinerary(SLL head, int days) {
             temp = temp->next;
         }
 
-        // Include dinner at the end of the day
-        hour = 19; // 7:00 PM
-        minute = 0;
-        displayTime(hour, minute);
-        printf(" - ");
-        displayTime(hour + 1, minute);
-        printf(": Dinner\n");
-
         printf("\n");
     }
 
-    // If any spots remain, print them as "extra spots"
+    // Handle extra spots not covered
     if (temp != NULL) {
         printf("Extra spots not covered in the itinerary:\n");
         while (temp != NULL) {
