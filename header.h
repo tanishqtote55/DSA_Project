@@ -52,3 +52,6 @@ double calculateDistance(float lat1, float lon1, float lat2, float lon2);
 
 // Retrieves the Node at a Specific Index in the List
 SLL getNodeAt(SLL head, int index);
+
+// Forms a Graph Representation (Distance Matrix) for the Tourist Spots
+float** graphformation(SLL head);

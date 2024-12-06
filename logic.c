@@ -201,3 +201,58 @@ SLL getNodeAt(SLL head, int index){
     
     return temp;
 }
+
+// Function to create the distance matrix (graph formation)
+float** graphformation(SLL head){
+    // Get the number of tourist spots
+    int len = length(head);
+    
+    // Allocate space for storing node pointers
+    SLL spots[len];  
+
+    // Store all the nodes in the array for easier access
+    SLL temp = head;
+    for (int i = 0; i < len; i++) {
+        spots[i] = temp;
+        temp = temp->next;
+    }
+
+    // Initialize the distance matrix
+    float **arr = malloc(len * sizeof(float *));
+    for (int i = 0; i < len; i++) {
+        arr[i] = malloc(len * sizeof(float));
+    }
+
+    for (int i = 0; i < len; i++) {
+        for (int j = 0; j < len; j++) {
+            arr[i][j] = (i == j) ? 0.0 : -1.0;  // Initialize diagonals to 0 and others to -1 (uninitialized)
+        }
+    }
+
+    // Compute distances only for i != j
+    for (int i = 0; i < len; i++) {
+        for (int j = i + 1; j < len; j++) {
+            SLL spot1 = spots[i];
+            SLL spot2 = spots[j];
+            
+            float dist = calculateDistance(atof(spot1->Latitude), atof(spot1->Longitude), atof(spot2->Latitude), atof(spot2->Longitude));
+            arr[i][j] = dist;
+            arr[j][i] = dist;  // Symmetric matrix
+        }
+    }
+
+    // Print the distance matrix
+    printf("Distance Matrix:\n");
+    for (int i = 0; i < len; i++) {
+        for (int j = 0; j < len; j++) {
+            if (arr[i][j] >= 0) {
+                printf("%.2f ", arr[i][j]);
+            } else {
+                printf("N/A ");  // For uninitialized or invalid distances
+            }
+        }
+        printf("\n");
+    }
+
+    return arr;  // Return the distance matrix
+}
