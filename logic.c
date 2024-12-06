@@ -12,3 +12,10 @@ int length(SLL head){
     }
     return count;
 }
+
+// Function to Convert a Given String to Lowercase
+void toLowerCase(char *str){
+    for (int i = 0; str[i]; i++) {
+        str[i] = tolower(str[i]);  
+    }
+}

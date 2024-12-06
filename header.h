@@ -28,3 +28,6 @@ typedef node *SLL;
 
 // Returns the length of the singly linked list
 int length(SLL head);
+
+// Converts a string to lowercase
+void toLowerCase(char *str);
