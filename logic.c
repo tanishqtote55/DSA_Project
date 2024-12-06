@@ -541,7 +541,7 @@ void generateItinerary(SLL head, int days) {
             displayTime(hour, minute);
             printf(": Visit %s for %.2f hours\n", temp->spotName, timeSpent);
 
-            // Check if there is another spot for travel
+            // Check if there is another spot for travel (but only if not the last one of the day)
             if (temp->next != NULL && i < spotsPerDay - 1) {
                 int currentIndex = getNodeIndex(head, temp);
                 int nextIndex = getNodeIndex(head, temp->next);
@@ -572,14 +572,18 @@ void generateItinerary(SLL head, int days) {
                        temp->spotName, temp->next->spotName, travelTime, distance);
             }
 
-            // After adding travel time, update start time for the next visit
-            displayTime(hour, minute);
-            printf(": Start next visit\n");
+            // Only print "Start next visit" if it's not the last spot for the day
+            if (temp->next != NULL) {
+                displayTime(hour, minute);
+                printf(": Start next visit\n");
+            }
 
             // Move to the next spot
             temp = temp->next;
         }
 
+        // If it's the last spot of the day, don't print "Start next visit"
+        printf("End of day %d itinerary.\n", day);
         printf("\n");
     }
 
