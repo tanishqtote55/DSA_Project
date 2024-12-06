@@ -509,3 +509,280 @@ void generateItinerary(SLL head, int days) {
         printf("Extra spots not covered in the itinerary:\n  None\n");
     }
 }
+
+// void addReviewToCSV(const char *fileName) {
+//     FILE *file = fopen("./csv/tourist_spots.csv", "r+");
+//     if (file == NULL) {
+//         printf("Error Opening File\n");
+//         return;  // Return current list without changes
+//     }
+
+//     char spotName[MAX_REVIEW_LENGTH];
+//     char review[MAX_REVIEW_LENGTH];
+//     char line[MAX_LINE_LENGTH];
+//     long pos;
+//     int found = 0;
+
+//     // Get the spot name from the user
+//     printf("Enter the name of the tourist spot you want to review: ");
+//     fgets(spotName, sizeof(spotName), stdin);
+//     spotName[strcspn(spotName, "\n")] = 0;  // Remove newline character
+
+//     // Read the file line by line
+//     while (fgets(line, sizeof(line), file)) {
+//         pos = ftell(file);  // Get the current file position
+
+//         // Extract city and spot name from the CSV line
+//         char *city = strtok(line, ",");
+//         char *spot = strtok(NULL, ",");  // This should be the spot name
+
+//         // If the spot name in the line matches the user input
+//         if (spot != NULL && strcmp(spot, spotName) == 0) {
+//             // Prompt the user to enter a review for the spot
+//             printf("Enter your review for '%s': ", spotName);
+//             fgets(review, sizeof(review), stdin);
+//             review[strcspn(review, "\n")] = 0;  // Remove newline character
+
+//             // Go back to the beginning of the line in the file
+//             fseek(file, pos - strlen(line), SEEK_SET);
+
+//             // Append the review to the end of the original line
+//             line[strcspn(line, "\n")] = 0;  // Remove the newline in the original line
+//             fprintf(file, "|%s\n", review);
+//             found = 1;
+//             break;
+//         }
+//     }
+
+//     // If the spot was not found, inform the user
+//     if (!found) {
+//         printf("The spot '%s' was not found in the CSV file.\n", spotName);
+//     }
+
+//     fclose(file);
+//     printf("Review has been added successfully.\n");
+// }
+
+
+// void addReviewToCSV() {
+//     FILE *file = fopen("./csv/tourist_spots.csv", "r+");
+//     if (file == NULL) {
+//         printf("Error Opening File\n");
+//         return;
+//     }
+
+//     char spotName[MAX_REVIEW_LENGTH];
+//     char review[MAX_REVIEW_LENGTH];
+//     char line[MAX_LINE_LENGTH];
+//     long writePosition;
+//     int found = 0;
+
+//     // Get the spot name from the user
+//     printf("Enter the name of the tourist spot you want to review: ");
+//     fgets(spotName, sizeof(spotName), stdin);
+//     spotName[strcspn(spotName, "\n")] = 0;  // Remove newline character
+
+//     // Read the file line by line
+//     while (fgets(line, sizeof(line), file)) {
+//         writePosition = ftell(file);  // Mark the position after reading the line
+
+//         // Make a copy of the line for processing
+//         char lineCopy[MAX_LINE_LENGTH];
+//         strcpy(lineCopy, line);
+
+//         // Extract city and spot name from the line copy
+//         strtok(lineCopy, ",");  // Skip the city
+//         char *spot = strtok(NULL, ",");  // Extract the spot name
+
+//         // If the spot name matches
+//         if (spot != NULL && strcmp(spot, spotName) == 0) {
+//             // Prompt the user for the review
+//             printf("Enter your review for '%s': ", spotName);
+//             fgets(review, sizeof(review), stdin);
+//             review[strcspn(review, "\n")] = 0;  // Remove newline character
+
+//             // Ensure the line has a '|' separator for reviews
+//             if (strchr(line, '|') == NULL) {
+//                 line[strcspn(line, "\n")] = 0;  // Remove the existing newline
+//                 strcat(line, "|");             // Add '|' at the end of the line
+//             } else {
+//                 line[strcspn(line, "\n")] = 0;  // Remove newline for appending
+//             }
+
+//             // Append the review and add a newline
+//             strcat(line, review);
+//             strcat(line, "\n");
+
+//             // // Go back to the start of the line's position in the file
+//             fseek(file, writePosition - strlen(line), SEEK_SET);
+//             fprintf(file, "%s", line);
+//             // fflush(file);  // Ensure the changes are written to disk
+//             found = 1;
+//             break;
+//         }
+//     }
+
+//     if (!found) {
+//         printf("The spot '%s' was not found in the CSV file.\n", spotName);
+//     }
+
+//     fclose(file);
+//     if (found) {
+//         printf("Review has been added successfully.\n");
+//     }
+// }
+
+
+void addReviewToCSV() {
+    FILE *file = fopen("./csv/tourist_spots.csv", "r");
+    if (file == NULL) {
+        printf("Error opening file for reading.\n");
+        return;
+    }
+
+    FILE *tempFile = fopen("temp.csv", "w");
+    if (tempFile == NULL) {
+        printf("Error opening temporary file for writing.\n");
+        fclose(file);
+        return;
+    }
+
+    char spotName[MAX_REVIEW_LENGTH];
+    char review[MAX_REVIEW_LENGTH];
+    char line[MAX_LINE_LENGTH];
+    int found = 0;
+
+    // Get the spot name from the user
+    printf("Enter the name of the tourist spot you want to review: ");
+    fgets(spotName, sizeof(spotName), stdin);
+    spotName[strcspn(spotName, "\n")] = 0;  // Remove newline character
+
+    // Read each line and process
+    while (fgets(line, sizeof(line), file)) {
+        char originalLine[MAX_LINE_LENGTH];
+        strcpy(originalLine, line);  // Copy the line for safe modification
+
+        // Extract city and spot name from the line
+        char *city = strtok(line, ",");
+        char *spot = strtok(NULL, ",");
+
+        // If the spot name matches
+        if (spot != NULL && strcmp(spot, spotName) == 0) {
+            // Prompt the user for the review
+            printf("Enter your review for '%s': ", spotName);
+            fgets(review, sizeof(review), stdin);
+            review[strcspn(review, "\n")] = 0;  // Remove newline character
+
+            // Check if there's already a review section (|) in the line
+            if (strchr(originalLine, '|') == NULL) {
+                // No existing reviews; add a separator before the review
+                originalLine[strcspn(originalLine, "\n")] = 0;  // Remove existing newline
+                strcat(originalLine, "|");  // Add separator
+            } else {
+                originalLine[strcspn(originalLine, "\n")] = 0;  // Remove newline for appending
+            }
+
+            // Append the new review and a newline
+            strcat(originalLine, review);
+            strcat(originalLine, "|");
+            strcat(originalLine, "\n");
+
+            // Write the updated line to the temporary file
+            fputs(originalLine, tempFile);
+
+            found = 1;
+        } else {
+            // Write the unmodified line to the temporary file
+            fputs(originalLine, tempFile);
+        }
+    }
+
+    fclose(file);
+    fclose(tempFile);
+
+    // Replace the original file with the updated file
+    if (remove("./csv/tourist_spots.csv") == 0) {
+        if (rename("temp.csv", "./csv/tourist_spots.csv") == 0) {
+            if (found) {
+                printf("Review has been added successfully.\n");
+            } else {
+                printf("The spot '%s' was not found in the CSV file.\n", spotName);
+            }
+        } else {
+            printf("Error renaming the temporary file.\n");
+        }
+    } else {
+        printf("Error deleting the original file.\n");
+    }
+}
+
+
+void readReviewsFromCSV() {
+    FILE *file = fopen("./csv/tourist_spots.csv", "r");
+    if (file == NULL) {
+        printf("Error opening file for reading.\n");
+        return;
+    }
+
+    char spotName[MAX_REVIEW_LENGTH];
+    char line[MAX_LINE_LENGTH];
+    char *reviews;
+    int found = 0;
+
+    // Get the spot name from the user
+    printf("Enter the name of the tourist spot you want to read reviews for: ");
+    fgets(spotName, sizeof(spotName), stdin);
+    spotName[strcspn(spotName, "\n")] = 0;  // Remove newline character
+
+    // Read each line and process
+    while (fgets(line, sizeof(line), file)) {
+        // Make a copy of the line for processing
+        char lineCopy[MAX_LINE_LENGTH];
+        strcpy(lineCopy, line);
+
+        // Extract city and spot name from the line
+        strtok(lineCopy, ",");  // Skip city
+        char *spot = strtok(NULL, ",");  // Extract the spot name
+
+        // If the spot name matches
+        if (spot != NULL && strcmp(spot, spotName) == 0) {
+            // Look for the reviews part (after '|')
+            reviews = strchr(line, '|');
+            if (reviews != NULL) {
+                // Skip the '|' character to start reading reviews
+                reviews++;
+
+                // Display reviews
+                printf("Reviews for '%s':\n", spotName);
+                char *review = strtok(reviews, "|");  // Separate reviews by '|'
+                while (review != NULL) {
+                    // if (strlen(review) > 0) {  // Ensure review is not empty
+                    //     printf("- %s\n", review);
+                    // }
+                    // review = strtok(NULL, "|");
+
+                     // Trim newline and extra spaces from the review
+                    review[strcspn(review, "\n")] = 0;  // Remove newline if present
+                    
+                    // If the review is not just an empty string
+                    if (strlen(review) > 0) {
+                        printf("- %s\n", review);
+                    }
+
+                    // Get next review
+                    review = strtok(NULL, "|");
+                }
+            } else {
+                printf("No reviews found for '%s'.\n", spotName);
+            }
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("The spot '%s' was not found in the CSV file.\n", spotName);
+    }
+
+    fclose(file);
+}

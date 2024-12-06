@@ -57,6 +57,9 @@ int main(){
         printf("Tourist Spots in %s:\n", cityName);
         printTouristSpots(touristSpots);
 
+        // addReviewToCSV();
+        readReviewsFromCSV();
+        
         printf("\nCreating Distance Matrix...\n");
         float **distanceMatrix = graphformation(touristSpots); // Assuming this returns the distance matrix
 

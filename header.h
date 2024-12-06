@@ -5,8 +5,11 @@
 #include <math.h>
 #include <limits.h>
 
-#define MAX_LINE_LENGTH 256
+// #define MAX_LINE_LENGTH 256
 #define MAX_CITY_NAME 100
+
+#define MAX_REVIEW_LENGTH 1000
+#define MAX_LINE_LENGTH 1024
 
 typedef struct node{
     char cityName[MAX_CITY_NAME];
@@ -38,3 +41,6 @@ int isSpotFound(SLL touristSpots, const char *startSpotName);
 float calculateTotalDistance(SLL shortestPath, float **distanceMatrix, SLL touristSpots);
 void displayTime(int hour, int minute);
 void generateItinerary(SLL head, int days);
+
+void addReviewToCSV();
+void readReviewsFromCSV();
