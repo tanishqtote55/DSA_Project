@@ -161,6 +161,48 @@ SLL filterTouristSpots(SLL head, const char *cityName, const char *spotType, flo
     return head;  // Return the updated list
 }
 
+// Function to Remove a Spot from the Linked List
+void removeSpot(SLL *head, const char *spotName) {
+    if (*head == NULL) {
+        printf("The list is empty. Nothing to remove.\n");
+        return;
+    }
+
+    SLL current = *head;
+    SLL previous = NULL;
+    char spotNameLower[MAX_CITY_NAME]; // Assuming MAX_SPOT_NAME_LENGTH is defined
+
+    // Convert the spotName to lowercase for case-insensitive comparison
+    strncpy(spotNameLower, spotName, MAX_CITY_NAME);
+    toLowerCase(spotNameLower);
+
+    // Traverse the list to find the node to remove
+    while (current != NULL) {
+        char currentSpotNameLower[MAX_CITY_NAME];
+        
+        // Convert the current node's spotName to lowercase for comparison
+        strncpy(currentSpotNameLower, current->spotName, MAX_CITY_NAME);
+        toLowerCase(currentSpotNameLower);
+
+        if (strcmp(currentSpotNameLower, spotNameLower) == 0) {
+            // Node found; remove it
+            if (previous == NULL) {
+                // Removing the head node
+                *head = current->next;
+            } else {
+                previous->next = current->next;
+            }
+            free(current);
+            printf("Tourist spot \"%s\" has been removed from the list.\n", spotName);
+            return;
+        }
+        previous = current;
+        current = current->next;
+    }
+
+    printf("Spot \"%s\" not found in the list.\n", spotName);
+}
+
 // Function to Print All Tourist Spots in the Linked List
 void printTouristSpots(SLL head) {
     SLL temp = head;

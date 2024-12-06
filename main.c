@@ -49,6 +49,31 @@ int main(){
         printf("Tourist Spots in %s:\n", cityName);
         printTouristSpots(touristSpots);
 
+        // Allow user to remove spots
+        char removeChoice;
+        do {
+            printf("Do you want to remove any spot? (y/n): ");
+            scanf(" %c", &removeChoice); // Note the space before %c
+            getchar(); // Consume the newline character
+
+            if (removeChoice == 'y' || removeChoice == 'Y') {
+                char removeSpotName[MAX_CITY_NAME];
+                printf("Enter the name of the spot to remove: ");
+                scanf("%[^\n]s", removeSpotName);
+                getchar(); // Consume the newline character
+
+                removeSpot(&touristSpots, removeSpotName);
+
+                printf("Updated List of Tourist Spots:\n");
+                printTouristSpots(touristSpots);
+
+                if (touristSpots == NULL) {
+                    printf("All spots have been removed.\n");
+                    return 0;
+                }
+            }
+        } while (removeChoice == 'y' || removeChoice == 'Y');
+
         printf("\nCreating Distance Matrix...\n");
         float **distanceMatrix = graphformation(touristSpots); // Assuming this returns the distance matrix
 

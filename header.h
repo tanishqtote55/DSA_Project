@@ -44,6 +44,9 @@ void trimWhitespace(char *str);
 // Displays Tourist Spots Filtered by City, Spot Type, and Rating
 SLL filterTouristSpots(SLL head, const char *cityName, const char *spotType, float Rating);
 
+// Function to Remove a Spot from the Linked List
+void removeSpot(SLL *head, const char *spotName);
+
 // Prints All Tourist Spots in the List
 void printTouristSpots(SLL head);
 
