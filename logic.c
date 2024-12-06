@@ -160,3 +160,15 @@ SLL filterTouristSpots(SLL head, const char *cityName, const char *spotType, flo
     fclose(file); // Close the CSV file
     return head;  // Return the updated list
 }
+
+// Function to Print All Tourist Spots in the Linked List
+void printTouristSpots(SLL head) {
+    SLL temp = head;
+
+    // Traverse and print each node in the list
+    while (temp != NULL) {
+        printf("%s, %s, %.2f\n", 
+                temp->cityName, temp->spotName, temp->rating);
+        temp = temp->next;
+    }
+}
