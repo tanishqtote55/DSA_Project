@@ -256,3 +256,139 @@ float** graphformation(SLL head){
 
     return arr;  // Return the distance matrix
 }
+
+
+// Dijkstra's Algorithm Implementation ---
+// - This function implements Dijkstra's shortest path algorithm for a graph represented by a distance matrix.
+// - The graph nodes correspond to the tourist spots stored in a linked list. It identifies the shortest path
+//   from a starting spot to all other spots and returns the linked list of the shortest path.
+// - The function uses the distance matrix where `distanceMatrix[i][j]` holds the distance from spot `i` to spot `j`.
+// - It operates iteratively, visiting the closest unvisited spot and updating the shortest known path.
+// - After processing all reachable spots, it outputs the farthest spot from the starting point based on the distances.
+
+// Parameters:
+// - head: Pointer to the head of the linked list of tourist spots. Each node contains a spot's name, city, rating, etc.
+// - startSpotName: Name of the starting spot for the shortest path computation (case-insensitive).
+// - distanceMatrix: A 2D array representing distances between all pairs of tourist spots. A value of `-1` indicates no direct path between two spots.
+
+// Returns:
+// - A linked list containing the nodes (tourist spots) in the order of the shortest path found from the starting spot.
+// - NULL if the starting spot is not found or the graph is empty.
+
+SLL dijkstra_iterative(SLL head, const char *startSpotName, float **distanceMatrix){
+    // Step 1: Get the number of tourist spots
+    int len = length(head);
+
+    // If the list is empty, there's no path to compute
+    if (len == 0) {
+        printf("No spots to visit.\n");
+        return NULL;
+    }
+
+    // Step 2: Store all spots in an array for easier access later
+    // Create an array to store pointers to the spots in the linked list
+    SLL spots[len];
+    SLL temp = head;
+    for (int i = 0; i < len; i++) {
+        spots[i] = temp;
+        temp = temp->next;
+    }
+
+    // Step 3: Convert the starting spot name to lowercase for case-insensitive comparison
+    char startSpotNameLower[MAX_CITY_NAME];
+    strcpy(startSpotNameLower, startSpotName);
+    toLowerCase(startSpotNameLower);
+
+    // Step 4: Find the starting spot's index in the array of spots
+    int startIndex = -1;
+    for (int i = 0; i < len; i++) {
+        char spotNameLower[MAX_CITY_NAME];
+        strcpy(spotNameLower, spots[i]->spotName);
+        toLowerCase(spotNameLower);
+
+        // If the names match, we've found the starting spot
+        if (strcmp(spotNameLower, startSpotNameLower) == 0) {
+            startIndex = i;
+            break;
+        }
+    }
+
+    // If the starting spot is not found, return NULL
+    if (startIndex == -1) {
+        printf("Starting spot \"%s\" not found in the list.\n", startSpotName);
+        return NULL;
+    }
+
+    // Step 5: Initialize the visited array to keep track of visited spots
+    int visited[len];
+    for (int i = 0; i < len; i++) {
+        visited[i] = 0;  // Initially, all spots are unvisited
+    }
+
+    // Step 6: Create a linked list to store the shortest path
+    SLL shortestPath = NULL;
+
+    // Step 7: Start Dijkstra's algorithm from the starting spot
+    int currentSpot = startIndex;
+    visited[currentSpot] = 1;  // Mark the starting spot as visited
+    printf("Starting at: %s\n", spots[currentSpot]->spotName);
+
+    // Add the starting spot to the shortest path linked list
+    SLL newNode = createNode(spots[currentSpot]->cityName, spots[currentSpot]->spotName, spots[currentSpot]->rating, spots[currentSpot]->Longitude, spots[currentSpot]->Latitude);
+    addNode(&shortestPath, newNode);
+
+    // Step 8: Visit all spots one by one, based on the shortest path
+    for (int count = 0; count < len - 1; count++) {
+        // Find the nearest unvisited spot
+        float minDist = INT_MAX;
+        int nextSpot = -1;
+
+        // Loop through all spots to find the unvisited one with the minimum distance
+        for (int i = 0; i < len; i++) {
+            if (!visited[i] && distanceMatrix[currentSpot][i] != -1 && distanceMatrix[currentSpot][i] < minDist) {
+                minDist = distanceMatrix[currentSpot][i];
+                nextSpot = i;
+            }
+        }
+
+        // If no unvisited spot is reachable, exit the loop
+        if (nextSpot == -1) {
+            // No more unvisited spots reachable
+            break;
+        }
+
+        // Step 9: Mark the next spot as visited and move to that spot
+        visited[nextSpot] = 1;
+        printf("Next stop: %s (Distance: %.2f)\n", spots[nextSpot]->spotName, minDist);
+        
+        // Print the path from the current spot to the next spot
+        printf("Path: %s -> %s\n", spots[currentSpot]->spotName, spots[nextSpot]->spotName);
+
+        // Add the next spot to the shortest path linked list
+        SLL newNode = createNode(spots[nextSpot]->  cityName, spots[nextSpot]->spotName, spots[nextSpot]->rating, spots[nextSpot]->Longitude, spots[nextSpot]->Latitude);
+        addNode(&shortestPath, newNode);
+
+        // Update the current spot to the next one
+        currentSpot = nextSpot;
+    }
+
+    // Step 10: After all spots are visited, find and display the farthest spot from the start
+    float maxDist = -1.0;
+    int farthestSpot = -1;
+
+    // Loop through all spots to find the farthest spot from the starting point
+    for (int i = 0; i < len; i++) {
+        if (distanceMatrix[startIndex][i] > maxDist) {
+            maxDist = distanceMatrix[startIndex][i];
+            farthestSpot = i;
+        }
+    }
+
+    // If a farthest spot is found, print it
+    if (farthestSpot != -1) {
+        printf("\nFarthest spot from %s is %s at a distance of %.2f\n", spots[startIndex]->spotName, spots[farthestSpot]->spotName, maxDist);
+    }
+
+    // Step 11: Return the linked list of the shortest path
+    return shortestPath;
+}

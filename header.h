@@ -55,3 +55,6 @@ SLL getNodeAt(SLL head, int index);
 
 // Forms a Graph Representation (Distance Matrix) for the Tourist Spots
 float** graphformation(SLL head);
+
+// Finds the shortest path using Dijkstra's algorithm (iterative approach)
+SLL dijkstra_iterative(SLL head, const char *startSpotName, float **distanceMatrix);
