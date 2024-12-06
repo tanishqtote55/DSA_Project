@@ -189,3 +189,15 @@ double calculateDistance(float lat1, float lon1, float lat2, float lon2){
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
     return 6371.0 * c; // Earth radius in kilometers
 }
+
+// Function to Access the Node at a Specific Index in the List
+SLL getNodeAt(SLL head, int index){
+    SLL temp = head;
+
+    // Traverse the list until the specified index
+    for (int i = 0; i < index && temp != NULL; i++) {
+        temp = temp -> next;
+    }
+    
+    return temp;
+}
