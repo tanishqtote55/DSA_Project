@@ -6,9 +6,9 @@ int main(){
     scanf("%[^\n]s", cityName);
     getchar(); // Consume the newline
 
-    char spotType[MAX_CITY_NAME];
-    printf("Enter the spot type (e.g. Historical Monument, Museum, Park, Religious Site, Shopping, etc.): ");
-    scanf("%[^\n]s", spotType);
+    char spotTypeInput[MAX_CITY_NAME * 10];
+    printf("Enter the spot types Separated by Commas (e.g. Historical Monument, Museum, Park, Religious Site, Shopping, etc.): ");
+    scanf("%[^\n]s", spotTypeInput);
     getchar(); // Consume the newline
 
     float Rating;
@@ -16,7 +16,35 @@ int main(){
     scanf("%f", &Rating);
     getchar();  // Consume the newline character left by scanf
 
-    SLL touristSpots = filterTouristSpots(NULL, cityName, spotType, Rating);
+    char spotTypes[10][MAX_CITY_NAME];
+    int typeCount = 0;
+    char *token = strtok(spotTypeInput, ",");
+    while (token != NULL && typeCount < 10) {
+        strcpy(spotTypes[typeCount++], token);
+        token = strtok(NULL, ",");
+    }
+
+    // Create an empty linked list
+    SLL touristSpots = NULL;
+    
+    // Process each spot type and append results to the linked list
+    for (int i = 0; i < typeCount; i++) {
+        char trimmedSpotType[MAX_CITY_NAME];
+        strcpy(trimmedSpotType, spotTypes[i]);
+        trimWhitespace(trimmedSpotType); // Helper function to remove leading/trailing spaces
+        // printf("%s", trimmedSpotType);
+        // Call displayTouristSpots to get spots for this type
+        SLL newSpots = filterTouristSpots(NULL, cityName, trimmedSpotType, Rating);
+        // printTouristSpots(newSpots);
+        // Append new spots to the main list
+        SLL temp = newSpots;
+        while (temp != NULL) {
+            SLL newNode = createNode(temp->cityName, temp->spotName, temp->rating, temp->Longitude, temp->Latitude);
+            addNode(&touristSpots, newNode);
+            temp = temp->next;
+        }
+    }
+
     if (touristSpots != NULL) {
         printf("Tourist Spots in %s:\n", cityName);
         printTouristSpots(touristSpots);
