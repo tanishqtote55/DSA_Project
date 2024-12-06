@@ -46,3 +46,6 @@ SLL filterTouristSpots(SLL head, const char *cityName, const char *spotType, flo
 
 // Prints All Tourist Spots in the List
 void printTouristSpots(SLL head);
+
+// Calculates the Great-Circle Distance Between Two Geographical Coordinates
+double calculateDistance(float lat1, float lon1, float lat2, float lon2);

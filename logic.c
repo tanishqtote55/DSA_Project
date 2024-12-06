@@ -172,3 +172,20 @@ void printTouristSpots(SLL head) {
         temp = temp->next;
     }
 }
+
+// Function to Calculate the Haversine Distance Between Two Points on the Earth's Surface
+double calculateDistance(float lat1, float lon1, float lat2, float lon2){
+    lat1 = lat1 * 3.141592653589793 / 180.0;
+    lon1 = lon1 * 3.141592653589793 / 180.0;
+    lat2 = lat2 * 3.141592653589793 / 180.0;
+    lon2 = lon2 * 3.141592653589793 / 180.0;
+
+    double dlat = lat2 - lat1;
+    double dlon = lon2 - lon1;
+
+    double a = sin(dlat / 2) * sin(dlat / 2) +
+               cos(lat1) * cos(lat2) *
+               sin(dlon / 2) * sin(dlon / 2);
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    return 6371.0 * c; // Earth radius in kilometers
+}
