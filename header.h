@@ -27,6 +27,7 @@ void addNode(SLL *head, SLL newNode);
 int matchesType(const char *spotType, char spotTypes[][MAX_CITY_NAME], int numTypes);
 void trimWhitespace(char *str);
 SLL displayTouristSpots(SLL head, const char *cityName, const char *spotType, float Rating);
+void removeSpot(SLL *head, const char *spotName);
 void printTouristSpots(SLL head);
 double calculateDistance(float lat1, float lon1, float lat2, float lon2);
 SLL getNodeAt(SLL head, int index);
