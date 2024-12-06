@@ -19,3 +19,23 @@ void toLowerCase(char *str){
         str[i] = tolower(str[i]);  
     }
 }
+
+// Function to create a new node
+SLL createNode(char *city, char *spot, float rating, char *longitude, char *latitude){
+    // Allocate memory for a new node
+    SLL newNode = (SLL)malloc(sizeof(node));
+    if (!newNode) {
+        printf("Memory allocation error.\n");
+        return NULL;
+    }
+
+    // Initialize the node's data
+    strcpy(newNode->cityName, city);
+    strcpy(newNode->spotName, spot);
+    newNode->rating = rating;
+    strcpy(newNode->Longitude, longitude);
+    strcpy(newNode->Latitude, latitude);
+    newNode->next = NULL;
+    
+    return newNode;
+}

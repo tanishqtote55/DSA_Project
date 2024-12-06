@@ -31,3 +31,6 @@ int length(SLL head);
 
 // Converts a string to lowercase
 void toLowerCase(char *str);
+
+// Creates a new node with the given data
+SLL createNode(char *city, char *spot, float rating, char *longitude, char *latitude);
