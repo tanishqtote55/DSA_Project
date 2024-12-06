@@ -23,3 +23,8 @@ typedef struct node {
 
 // Typedef for simplicity
 typedef node *SLL;
+
+// Function prototypes =>
+
+// Returns the length of the singly linked list
+int length(SLL head);
