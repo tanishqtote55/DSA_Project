@@ -19,6 +19,20 @@ typedef struct node{
 
 typedef node *SLL;
 
+// Define a structure for queue nodes
+typedef struct QueueNode {
+    char spotName[100];
+    int day; // Added to store the day of the visit
+    int startHour, startMinute, endHour, endMinute;
+    float duration;
+    struct QueueNode* next;
+} QueueNode;
+
+// Define the queue structure
+typedef struct {
+    QueueNode* front;
+    QueueNode* rear;
+} Queue;
 
 int length(SLL head);
 void toLowerCase(char *str);
