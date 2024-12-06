@@ -428,3 +428,28 @@ int getNodeIndex(SLL touristSpots, SLL node){
     // If Node not found
     return -1;  
 }
+
+// Function to Calculate the Total Distance of the Shortest Path
+float calculateTotalDistance(SLL shortestPath, float **distanceMatrix, SLL touristSpots){
+    float totalDistance = 0.0;
+    
+    if (shortestPath == NULL || shortestPath->next == NULL) {
+        return totalDistance;  // If there's no valid path, the total distance is 0
+    }
+    
+    SLL current = shortestPath;
+    
+    // Traverse the linked list and sum the distances between consecutive spots
+    while (current != NULL && current->next != NULL) {
+        int currentIndex = getNodeIndex(touristSpots, current);
+        int nextIndex = getNodeIndex(touristSpots, current->next);
+        
+        if (currentIndex != -1 && nextIndex != -1) {
+            totalDistance += distanceMatrix[currentIndex][nextIndex];
+        }
+        
+        current = current->next;
+    }
+
+    return totalDistance;
+}

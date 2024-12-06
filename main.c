@@ -34,6 +34,9 @@ int main(){
         // Display the shortest path
         printShortestPath(shortestPath);
 
+        float totalDistance = calculateTotalDistance(shortestPath, distanceMatrix, touristSpots);
+        printf("\nTotal distance traveled: %.2f km\n", totalDistance);
+
     } else {
         printf("No tourist spots found for the city: %s\n", cityName);
     }

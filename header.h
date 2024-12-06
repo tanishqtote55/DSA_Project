@@ -64,3 +64,6 @@ void printShortestPath(SLL shortestPath);
 
 // Function to Get the Index of a Node in the Shortest Path Linked List
 int getNodeIndex(SLL touristSpots, SLL node);
+
+// Function to Calculate the Total Distance of the Shortest Path
+float calculateTotalDistance(SLL shortestPath, float **distanceMatrix, SLL touristSpots);
