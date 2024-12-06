@@ -57,3 +57,34 @@ void addNode(SLL *head, SLL newNode){
         temp->next = newNode;
     }
 }
+
+// Function to Remove Leading and Trailing Whitespace From a String
+void trimWhitespace(char* str) {
+    char* start = str; // Pointer to the beginning of the string
+    char* end;
+
+    // Move the start pointer to the first non-space character
+    while (isspace((unsigned char)*start)) {
+        start++;
+    }
+
+    // If the string is entirely spaces, set it to an empty string
+    if (*start == 0) {
+        str[0] = '\0';
+        return;
+    }
+
+    // Find the end of the string
+    end = start + strlen(start) - 1;
+
+    // Move the end pointer back to the last non-space character
+    while (end > start && isspace((unsigned char)*end)) {
+        end--;
+    }
+
+    // Null-terminate the trimmed string
+    *(end + 1) = '\0';
+
+    // Copy the trimmed string back to the original pointer
+    memmove(str, start, end - start + 2); // +2 to include null terminator
+}

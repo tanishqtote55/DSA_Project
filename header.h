@@ -37,3 +37,6 @@ SLL createNode(char *city, char *spot, float rating, char *longitude, char *lati
 
 // Adds a new node to the end of the list
 void addNode(SLL *head, SLL newNode);
+
+// Trims whitespace from the beginning and end of a string
+void trimWhitespace(char *str);
