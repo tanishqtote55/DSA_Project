@@ -36,6 +36,24 @@ SLL createNode(char *city, char *spot, float rating, char *longitude, char *lati
     strcpy(newNode->Longitude, longitude);
     strcpy(newNode->Latitude, latitude);
     newNode->next = NULL;
-    
+
     return newNode;
+}
+
+// Function to Add a New Node to the Linked List
+void addNode(SLL *head, SLL newNode){
+    // If the list is empty, make the new node the head
+    if (*head == NULL) {
+        *head = newNode;
+    } else {
+        SLL temp = *head;
+
+        // Traverse to the end of the list
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+
+        // Add the new node to the end of the list
+        temp->next = newNode;
+    }
 }

@@ -34,3 +34,6 @@ void toLowerCase(char *str);
 
 // Creates a new node with the given data
 SLL createNode(char *city, char *spot, float rating, char *longitude, char *latitude);
+
+// Adds a new node to the end of the list
+void addNode(SLL *head, SLL newNode);
