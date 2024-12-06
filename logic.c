@@ -408,3 +408,23 @@ void printShortestPath(SLL shortestPath){
     }
     printf("End\n");
 }
+
+// Function to Get the Index of a Node in the Shortest Path Linked List
+int getNodeIndex(SLL touristSpots, SLL node){
+    int index = 0;
+
+    SLL temp = touristSpots;
+    while (temp != NULL) {
+
+        // Compare based on spotName
+        if (strcmp(temp->spotName, node->spotName) == 0) {  
+            // If Node Found
+            return index;
+        }
+
+        temp = temp->next;
+        index++;
+    }
+    // If Node not found
+    return -1;  
+}

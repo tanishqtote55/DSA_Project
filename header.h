@@ -61,3 +61,6 @@ SLL dijkstra_iterative(SLL head, const char *startSpotName, float **distanceMatr
 
 // Prints the Shortest Path from the Starting Spot to All Others
 void printShortestPath(SLL shortestPath);
+
+// Function to Get the Index of a Node in the Shortest Path Linked List
+int getNodeIndex(SLL touristSpots, SLL node);
