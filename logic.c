@@ -564,7 +564,7 @@ void displayReviewsForSpot(SLL touristSpots, Review *reviews, int reviewCount, c
         if(isSpotFound(touristSpots, spotName)){
             if (strcmp(reviewsSpot, spotNameLower) == 0) {
                 if (!found) {
-                    printf("Reviews for '%s':\n", spotName);
+                    printf("Reviews for '%s':\n", spotNameLower);
                     found = 1;
                 }
                 printf("City: %s\n", reviews[i].cityName);
