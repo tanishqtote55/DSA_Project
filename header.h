@@ -87,3 +87,6 @@ float calculateTotalDistance(SLL shortestPath, float **distanceMatrix, SLL touri
 
 // Function to load reviews from a file into a dynamically allocated array
 void loadReviews(const char *filename, Review **reviews, int *reviewCount);
+
+// Function to display all reviews for a specific spot.
+void displayReviewsForSpot(Review *reviews, int reviewCount, const char *spotName);

@@ -543,3 +543,28 @@ void loadReviews(const char *filename, Review **reviews, int *reviewCount){
 
     fclose(file);
 }
+
+// Function to display all reviews for a specific spot.
+// Parameters:
+// - reviews: Array of Review structures containing review data.
+// - reviewCount: Total number of reviews in the array.
+// - spotName: Name of the spot for which reviews should be displayed.
+void displayReviewsForSpot(Review *reviews, int reviewCount, const char *spotName){
+    int found = 0; // Flag to track if any reviews are found
+
+    for (int i = 0; i < reviewCount; i++) {
+        if (strcmp(reviews[i].spotName, spotName) == 0) {
+            if (!found) {
+                printf("Reviews for '%s':\n", spotName);
+                found = 1;
+            }
+            printf("City: %s\n", reviews[i].cityName);
+            printf("Rating: %.1f\n", reviews[i].userRating);
+            printf("Review: %s\n\n", reviews[i].reviewText);
+        }
+    }
+
+    if (!found) {
+        printf("No reviews found for the spot: %s\n", spotName);
+    }
+}
