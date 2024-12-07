@@ -549,7 +549,7 @@ void loadReviews(const char *filename, Review **reviews, int *reviewCount){
 // - reviews: Array of Review structures containing review data.
 // - reviewCount: Total number of reviews in the array.
 // - spotName: Name of the spot for which reviews should be displayed.
-void displayReviewsForSpot(Review *reviews, int reviewCount, const char *spotName){
+void displayReviewsForSpot(SLL touristSpots, Review *reviews, int reviewCount, const char *spotName){
     char spotNameLower[MAX_CITY_NAME];
 
     strcpy(spotNameLower, spotName);
@@ -561,14 +561,19 @@ void displayReviewsForSpot(Review *reviews, int reviewCount, const char *spotNam
         char reviewsSpot[MAX_CITY_NAME];
         strcpy(reviewsSpot, reviews[i].spotName);
         toLowerCase(reviewsSpot);
-        if (strcmp(reviewsSpot, spotNameLower) == 0) {
-            if (!found) {
-                printf("Reviews for '%s':\n", spotName);
-                found = 1;
+        if(isSpotFound(touristSpots, spotName)){
+            if (strcmp(reviewsSpot, spotNameLower) == 0) {
+                if (!found) {
+                    printf("Reviews for '%s':\n", spotName);
+                    found = 1;
+                }
+                printf("City: %s\n", reviews[i].cityName);
+                printf("Rating: %.1f\n", reviews[i].userRating);
+                printf("Review: %s\n\n", reviews[i].reviewText);
             }
-            printf("City: %s\n", reviews[i].cityName);
-            printf("Rating: %.1f\n", reviews[i].userRating);
-            printf("Review: %s\n\n", reviews[i].reviewText);
+        }else{
+            printf("Spot not present in the city\n");
+            break;
         }
     }
 
@@ -580,8 +585,14 @@ void displayReviewsForSpot(Review *reviews, int reviewCount, const char *spotNam
 // Function to check if the spot is found in the tourist spots list
 int isSpotFound(SLL touristSpots, const char *startSpotName) {
     SLL temp = touristSpots;
+    char startsSpotNameLower[MAX_CITY_NAME];
+    strcpy(startsSpotNameLower, startSpotName);
+    toLowerCase(startsSpotNameLower);
     while (temp != NULL) {
-        if (strcmp(temp->spotName, startSpotName) == 0) {
+        char spotNameLower[MAX_CITY_NAME];
+        strcpy(spotNameLower, temp -> spotName);
+        toLowerCase(spotNameLower);
+        if (strcmp(spotNameLower, startsSpotNameLower) == 0) {
             return 1; // Spot found
         }
         temp = temp->next;

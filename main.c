@@ -65,7 +65,7 @@ int main(){
                 printf("Enter the name of the spot to view reviews: ");
                 scanf("%[^\n]s", spotName);
                 getchar(); // Consume newline
-                displayReviewsForSpot(reviews, reviewCount, spotName);
+                displayReviewsForSpot(touristSpots, reviews, reviewCount, spotName);
             } else if (reviewChoice == 'a' || reviewChoice == 'A') {
                 char spotName[MAX_CITY_NAME];
                 printf("Enter the name of the spot to add a review: ");

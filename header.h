@@ -89,7 +89,7 @@ float calculateTotalDistance(SLL shortestPath, float **distanceMatrix, SLL touri
 void loadReviews(const char *filename, Review **reviews, int *reviewCount);
 
 // Function to display all reviews for a specific spot.
-void displayReviewsForSpot(Review *reviews, int reviewCount, const char *spotName);
+void displayReviewsForSpot(SLL touristSpots, Review *reviews, int reviewCount, const char *spotName);
 
 // Function to add a new review to the reviews array and save it to the file.
 void addReview(SLL touristSpots, const char *filename, Review **reviews, int *reviewCount, const char *cityName, const char *spotName);
