@@ -768,11 +768,11 @@ void generateItinerary(SLL head, int days){
                        temp->spotName, temp->next->spotName, travelTime, distance);
             }
 
-            // Only print "Start next visit" if it's not the last spot for the day
-            if (temp->next != NULL) {
-                displayTime(hour, minute);
-                printf(": Start next visit\n");
-            }
+            // // Only print "Start next visit" if it's not the last spot for the day
+            // if (temp->next != NULL) {
+            //     displayTime(hour, minute);
+            //     printf(": Start next visit\n");
+            // }
 
             // Move to the next spot
             temp = temp->next;
@@ -801,5 +801,5 @@ void generateItinerary(SLL head, int days){
     }
 
     free(distanceMatrix);
-    
+
 }
