@@ -92,10 +92,13 @@ void loadReviews(const char *filename, Review **reviews, int *reviewCount);
 void displayReviewsForSpot(Review *reviews, int reviewCount, const char *spotName);
 
 // Function to add a new review to the reviews array and save it to the file.
-void addReview(const char *filename, Review **reviews, int *reviewCount, const char *cityName, const char *spotName);
+void addReview(SLL touristSpots, const char *filename, Review **reviews, int *reviewCount, const char *cityName, const char *spotName);
 
 // Helper function to display time in HH:MM format
 void displayTime(int hour, int minute);
 
 // Function to generate an itinerary for a given number of days.
 void generateItinerary(SLL head, int days);
+
+
+int isSpotFound(SLL touristSpots, const char *startSpotName);

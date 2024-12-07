@@ -71,7 +71,7 @@ int main(){
                 printf("Enter the name of the spot to add a review: ");
                 scanf("%[^\n]s", spotName);
                 getchar(); // Consume newline
-                addReview(REVIEW_FILE, &reviews, &reviewCount, cityName, spotName);
+                addReview(touristSpots, REVIEW_FILE, &reviews, &reviewCount, cityName, spotName);
             }
         } while (reviewChoice != 'n' && reviewChoice != 'N');
 

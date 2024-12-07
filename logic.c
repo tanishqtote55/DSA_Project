@@ -550,10 +550,18 @@ void loadReviews(const char *filename, Review **reviews, int *reviewCount){
 // - reviewCount: Total number of reviews in the array.
 // - spotName: Name of the spot for which reviews should be displayed.
 void displayReviewsForSpot(Review *reviews, int reviewCount, const char *spotName){
+    char spotNameLower[MAX_CITY_NAME];
+
+    strcpy(spotNameLower, spotName);
+    toLowerCase(spotNameLower);
+
     int found = 0; // Flag to track if any reviews are found
 
     for (int i = 0; i < reviewCount; i++) {
-        if (strcmp(reviews[i].spotName, spotName) == 0) {
+        char reviewsSpot[MAX_CITY_NAME];
+        strcpy(reviewsSpot, reviews[i].spotName);
+        toLowerCase(reviewsSpot);
+        if (strcmp(reviewsSpot, spotNameLower) == 0) {
             if (!found) {
                 printf("Reviews for '%s':\n", spotName);
                 found = 1;
@@ -569,6 +577,18 @@ void displayReviewsForSpot(Review *reviews, int reviewCount, const char *spotNam
     }
 }
 
+// Function to check if the spot is found in the tourist spots list
+int isSpotFound(SLL touristSpots, const char *startSpotName) {
+    SLL temp = touristSpots;
+    while (temp != NULL) {
+        if (strcmp(temp->spotName, startSpotName) == 0) {
+            return 1; // Spot found
+        }
+        temp = temp->next;
+    }
+    return 0; // Spot not found
+}
+
 // Function to add a new review to the reviews array and save it to the file.
 // Parameters:
 // - filename: Path to the file where the review should be saved.
@@ -576,37 +596,40 @@ void displayReviewsForSpot(Review *reviews, int reviewCount, const char *spotNam
 // - reviewCount: Pointer to the integer tracking the current number of reviews.
 // - cityName: Name of the city for the new review.
 // - spotName: Name of the spot for the new review.
-void addReview(const char *filename, Review **reviews, int *reviewCount, const char *cityName, const char *spotName){
+void addReview(SLL touristSpots, const char *filename, Review **reviews, int *reviewCount, const char *cityName, const char *spotName){
     if (*reviewCount >= MAX_REVIEWS) {
         printf("Maximum review limit reached.\n");
         return;
     }
+    if(isSpotFound(touristSpots, spotName)){
+        Review newReview;
+        strcpy(newReview.cityName, cityName);
+        strcpy(newReview.spotName, spotName);
 
-    Review newReview;
-    strcpy(newReview.cityName, cityName);
-    strcpy(newReview.spotName, spotName);
+        printf("Enter your review: ");
+        scanf("%[^\n]s", newReview.reviewText);
+        getchar(); // Consume newline
 
-    printf("Enter your review: ");
-    scanf("%[^\n]s", newReview.reviewText);
-    getchar(); // Consume newline
+        printf("Enter your rating (0.0 - 5.0): ");
+        scanf("%f", &newReview.userRating);
+        getchar(); // Consume newline
 
-    printf("Enter your rating (0.0 - 5.0): ");
-    scanf("%f", &newReview.userRating);
-    getchar(); // Consume newline
+        (*reviews)[*reviewCount] = newReview;
+        (*reviewCount)++;
 
-    (*reviews)[*reviewCount] = newReview;
-    (*reviewCount)++;
+        FILE *file = fopen(filename, "a");
+        if (!file) {
+            printf("Could not open review file: %s\n", filename);
+            return;
+        }
 
-    FILE *file = fopen(filename, "a");
-    if (!file) {
-        printf("Could not open review file: %s\n", filename);
-        return;
+        fprintf(file, "%s,%s,%.1f,%s\n", newReview.cityName, newReview.spotName, newReview.userRating, newReview.reviewText);
+        fclose(file);
+
+        printf("Review added successfully!\n");
+    }else{
+        printf("Spot is not there in the city\n");
     }
-
-    fprintf(file, "%s,%s,%.1f,%s\n", newReview.cityName, newReview.spotName, newReview.userRating, newReview.reviewText);
-    fclose(file);
-
-    printf("Review added successfully!\n");
 }
 
 // Helper function to display time in HH:MM format
