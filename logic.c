@@ -613,3 +613,157 @@ void addReview(const char *filename, Review **reviews, int *reviewCount, const c
 void displayTime(int hour, int minute){
     printf("%02d:%02d", hour, minute);
 }
+
+// Function to generate an itinerary for a given number of days.
+// Parameters:
+// - head: Singly Linked List (SLL) containing spot information.
+// - days: Number of days for the itinerary.
+void generateItinerary(SLL head, int days){
+    // Validate the number of days
+    if (days <= 0) {
+        printf("Error: Number of days must be greater than zero.\n");
+        return;
+    }
+    if (days > 5) {
+        printf("Error: Not enough spots for more than 5 days of travel.\n");
+        return;
+    }
+
+    // Loop until the user makes a valid choice
+    int choice;
+    do {
+        printf("Choose itinerary mode:\n");
+        printf("  1. Manually specify time for each spot\n");
+        printf("  2. Use default schedule (1 hour per spot)\n");
+        printf("Enter your choice (1 or 2): ");
+        scanf("%d", &choice);
+
+        if (choice != 1 && choice != 2) {
+            printf("Invalid choice. Please try again.\n");
+        }
+    } while (choice != 1 && choice != 2);
+
+    // Calculate total spots and spots per day
+    int totalSpots = length(head);
+    int spotsPerDay = (totalSpots + days - 1) / days; // Round up spots per day
+
+    if (spotsPerDay > 5) {
+        printf("Warning: More than 5 spots in a day. You may not fully enjoy all stops.\n");
+    }
+
+    // Create distance matrix
+    float **distanceMatrix = graphformation(head);
+    if (!distanceMatrix) {
+        printf("Error: Unable to create distance matrix.\n");
+        return;
+    }
+
+    SLL temp = head;
+    for (int day = 1; day <= days; day++) {
+        printf("Day %d Itinerary:\n", day);
+
+        // Start time for the day
+        int hour = 8, minute = 0;
+
+        // Breakfast included at the start of the day
+        displayTime(hour, minute);
+        printf(" - ");
+        displayTime(hour + 1, minute);
+        printf(": Breakfast\n");
+
+        // Update time to 9:00 AM
+        hour += 1;
+
+        for (int i = 0; i < spotsPerDay && temp != NULL; i++) {
+            float timeSpent;
+
+            if (choice == 1) {
+                // Manually input time
+                printf("Enter the time (in hours) you want to spend at %s: ", temp->spotName);
+                scanf("%f", &timeSpent);
+            } else {
+                // Default time
+                timeSpent = 1.0; // Default time for a spot
+            }
+
+            // Update time for visiting the spot
+            displayTime(hour, minute);
+            printf(" - ");
+            hour += (int)timeSpent;
+            minute += (int)((timeSpent - (int)timeSpent) * 60);
+
+            if (minute >= 60) {
+                hour += minute / 60;
+                minute %= 60;
+            }
+            if (hour >= 24) {
+                hour %= 24;
+            }
+
+            displayTime(hour, minute);
+            printf(": Visit %s for %.2f hours\n", temp->spotName, timeSpent);
+
+            // Check if there is another spot for travel (but only if not the last one of the day)
+            if (temp->next != NULL && i < spotsPerDay - 1) {
+                int currentIndex = getNodeIndex(head, temp);
+                int nextIndex = getNodeIndex(head, temp->next);
+
+                if (currentIndex == -1 || nextIndex == -1) {
+                    printf("Error: Node index not found for travel calculation.\n");
+                    return;
+                }
+
+                // Calculate travel time using average speed of 30 km/h
+                float distance = distanceMatrix[currentIndex][nextIndex];
+                float avgSpeed = 30.0; // Updated average speed to 30 km/h
+                float travelTime = distance / avgSpeed; // Travel time in hours
+
+                // Update time with travel time in the background
+                hour += (int)travelTime;
+                minute += (int)((travelTime - (int)travelTime) * 60);
+
+                if (minute >= 60) {
+                    hour += minute / 60;
+                    minute %= 60;
+                }
+                if (hour >= 24) {
+                    hour %= 24;
+                }
+
+                printf("  Travel from %s to %s: %.2f hours (Distance: %.2f km)\n",
+                       temp->spotName, temp->next->spotName, travelTime, distance);
+            }
+
+            // Only print "Start next visit" if it's not the last spot for the day
+            if (temp->next != NULL) {
+                displayTime(hour, minute);
+                printf(": Start next visit\n");
+            }
+
+            // Move to the next spot
+            temp = temp->next;
+        }
+
+        // If it's the last spot of the day, don't print "Start next visit"
+        printf("End of day %d itinerary.\n", day);
+        printf("\n");
+    }
+
+    // Handle extra spots not covered
+    if (temp != NULL) {
+        printf("Extra spots not covered in the itinerary:\n");
+        while (temp != NULL) {
+            printf("  %s (Rating: %.2f)\n", temp->spotName, temp->rating);
+            temp = temp->next;
+        }
+    } else {
+        printf("Extra spots not covered in the itinerary:\n  None\n");
+    }
+
+    // Free the distance matrix
+    int totalNodes = length(head);
+    for (int i = 0; i < totalNodes; i++) {
+        free(distanceMatrix[i]);
+    }
+    free(distanceMatrix);
+}

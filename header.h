@@ -96,3 +96,6 @@ void addReview(const char *filename, Review **reviews, int *reviewCount, const c
 
 // Helper function to display time in HH:MM format
 void displayTime(int hour, int minute);
+
+// Function to generate an itinerary for a given number of days.
+void generateItinerary(SLL head, int days);
