@@ -11,6 +11,12 @@
 // Maximum Length for City or Spot Names
 #define MAX_CITY_NAME 100
 
+// Maximum number of reviews the program can handle.
+#define MAX_REVIEWS 100
+
+// Filepath for the reviews CSV file.
+#define REVIEW_FILE "./csv/spot_reviews.csv"
+
 // Definition of a Node in the Singly Linked List
 typedef struct node {
     char cityName[MAX_CITY_NAME];  // City name
@@ -23,6 +29,14 @@ typedef struct node {
 
 // Typedef for Simplicity
 typedef node *SLL;
+
+//review node
+typedef struct review {
+    char cityName[MAX_CITY_NAME];
+    char spotName[MAX_CITY_NAME];
+    float userRating;
+    char reviewText[256];
+} Review;
 
 // Function prototypes =>
 
