@@ -49,6 +49,34 @@ int main(){
         printf("Tourist Spots in %s:\n", cityName);
         printTouristSpots(touristSpots);
 
+        // Review system
+        Review *reviews = NULL;
+        int reviewCount = 0;
+        loadReviews(REVIEW_FILE, &reviews, &reviewCount);
+
+        char reviewChoice;
+        do {
+            printf("\nWould you like to view or add reviews? (v: view, a: add, n: none): ");
+            scanf(" %c", &reviewChoice);
+            getchar(); // Consume newline
+
+            if (reviewChoice == 'v' || reviewChoice == 'V') {
+                char spotName[MAX_CITY_NAME];
+                printf("Enter the name of the spot to view reviews: ");
+                scanf("%[^\n]s", spotName);
+                getchar(); // Consume newline
+                displayReviewsForSpot(reviews, reviewCount, spotName);
+            } else if (reviewChoice == 'a' || reviewChoice == 'A') {
+                char spotName[MAX_CITY_NAME];
+                printf("Enter the name of the spot to add a review: ");
+                scanf("%[^\n]s", spotName);
+                getchar(); // Consume newline
+                addReview(REVIEW_FILE, &reviews, &reviewCount, cityName, spotName);
+            }
+        } while (reviewChoice != 'n' && reviewChoice != 'N');
+
+        free(reviews); // Free memory allocated for reviews
+
         // Allow user to remove spots
         char removeChoice;
         do {
