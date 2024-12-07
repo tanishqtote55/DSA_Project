@@ -495,3 +495,51 @@ float calculateTotalDistance(SLL shortestPath, float **distanceMatrix, SLL touri
 
     return totalDistance;
 }
+
+// Function to load reviews from a file into a dynamically allocated array
+// Parameters:
+// - filename: Path to the file containing reviews
+// - reviews: Pointer to an array of Review structures (allocated within the function)
+// - reviewCount: Pointer to an integer to store the number of reviews loaded
+void loadReviews(const char *filename, Review **reviews, int *reviewCount){
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        printf("Could not open review file: %s\n", filename);
+        return;
+    }
+
+    *reviewCount = 0;
+    *reviews = malloc(MAX_REVIEWS * sizeof(Review));
+
+    char line[512];
+    while (fgets(line, sizeof(line), file)) {
+        char cityName[MAX_CITY_NAME];
+        char spotName[MAX_CITY_NAME];
+        float userRating;
+        char reviewText[256];
+
+        // Parse each line, handling quoted review text
+        int matched = sscanf(line, "%[^,],%[^,],%f,%[^\n]",
+                             cityName, spotName, &userRating, reviewText);
+
+        // Handle cases where the review text has quotes
+        if (matched == 4) {
+            // Remove quotes around the review text if present
+            size_t len = strlen(reviewText);
+            if (len > 1 && reviewText[0] == '"' && reviewText[len - 1] == '"') {
+                reviewText[len - 1] = '\0'; // Remove trailing quote
+                memmove(reviewText, reviewText + 1, len - 1); // Remove leading quote
+            }
+
+            // Populate the review structure
+            strcpy((*reviews)[*reviewCount].cityName, cityName);
+            strcpy((*reviews)[*reviewCount].spotName, spotName);
+            (*reviews)[*reviewCount].userRating = userRating;
+            strcpy((*reviews)[*reviewCount].reviewText, reviewText);
+
+            (*reviewCount)++;
+        }
+    }
+
+    fclose(file);
+}

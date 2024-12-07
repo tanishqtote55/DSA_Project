@@ -84,3 +84,6 @@ int getNodeIndex(SLL touristSpots, SLL node);
 
 // Function to Calculate the Total Distance of the Shortest Path
 float calculateTotalDistance(SLL shortestPath, float **distanceMatrix, SLL touristSpots);
+
+// Function to load reviews from a file into a dynamically allocated array
+void loadReviews(const char *filename, Review **reviews, int *reviewCount);
