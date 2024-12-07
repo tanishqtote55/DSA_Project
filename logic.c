@@ -607,3 +607,107 @@ void generateItinerary(SLL head, int days) {
     }
     free(distanceMatrix);
 }
+
+
+// review system
+
+void loadReviews(const char *filename, Review **reviews, int *reviewCount) {
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        printf("Could not open review file: %s\n", filename);
+        return;
+    }
+
+    *reviewCount = 0;
+    *reviews = malloc(MAX_REVIEWS * sizeof(Review));
+
+    char line[512];
+    while (fgets(line, sizeof(line), file)) {
+        char cityName[MAX_CITY_NAME];
+        char spotName[MAX_CITY_NAME];
+        float userRating;
+        char reviewText[256];
+
+        // Parse each line, handling quoted review text
+        int matched = sscanf(line, "%[^,],%[^,],%f,%[^\n]",
+                             cityName, spotName, &userRating, reviewText);
+
+        // Handle cases where the review text has quotes
+        if (matched == 4) {
+            // Remove quotes around the review text if present
+            size_t len = strlen(reviewText);
+            if (len > 1 && reviewText[0] == '"' && reviewText[len - 1] == '"') {
+                reviewText[len - 1] = '\0'; // Remove trailing quote
+                memmove(reviewText, reviewText + 1, len - 1); // Remove leading quote
+            }
+
+            // Populate the review structure
+            strcpy((*reviews)[*reviewCount].cityName, cityName);
+            strcpy((*reviews)[*reviewCount].spotName, spotName);
+            (*reviews)[*reviewCount].userRating = userRating;
+            strcpy((*reviews)[*reviewCount].reviewText, reviewText);
+
+            (*reviewCount)++;
+        }
+    }
+
+    fclose(file);
+}
+
+
+
+
+void displayReviewsForSpot(Review *reviews, int reviewCount, const char *spotName) {
+    int found = 0; // Flag to track if any reviews are found
+
+    for (int i = 0; i < reviewCount; i++) {
+        if (strcmp(reviews[i].spotName, spotName) == 0) {
+            if (!found) {
+                printf("Reviews for '%s':\n", spotName);
+                found = 1;
+            }
+            printf("City: %s\n", reviews[i].cityName);
+            printf("Rating: %.1f\n", reviews[i].userRating);
+            printf("Review: %s\n\n", reviews[i].reviewText);
+        }
+    }
+
+    if (!found) {
+        printf("No reviews found for the spot: %s\n", spotName);
+    }
+}
+
+
+
+void addReview(const char *filename, Review **reviews, int *reviewCount, const char *cityName, const char *spotName) {
+    if (*reviewCount >= MAX_REVIEWS) {
+        printf("Maximum review limit reached.\n");
+        return;
+    }
+
+    Review newReview;
+    strcpy(newReview.cityName, cityName);
+    strcpy(newReview.spotName, spotName);
+
+    printf("Enter your review: ");
+    scanf("%[^\n]s", newReview.reviewText);
+    getchar(); // Consume newline
+
+    printf("Enter your rating (0.0 - 5.0): ");
+    scanf("%f", &newReview.userRating);
+    getchar(); // Consume newline
+
+    (*reviews)[*reviewCount] = newReview;
+    (*reviewCount)++;
+
+    FILE *file = fopen(filename, "a");
+    if (!file) {
+        printf("Could not open review file: %s\n", filename);
+        return;
+    }
+
+    fprintf(file, "%s,%s,%.1f,%s\n", newReview.cityName, newReview.spotName, newReview.userRating, newReview.reviewText);
+    fclose(file);
+
+    printf("Review added successfully!\n");
+}

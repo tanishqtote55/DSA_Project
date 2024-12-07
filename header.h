@@ -8,6 +8,10 @@
 #define MAX_LINE_LENGTH 256
 #define MAX_CITY_NAME 100
 
+#define MAX_REVIEWS 100
+
+#define REVIEW_FILE "./csv/spot_reviews.csv"
+
 typedef struct node{
     char cityName[MAX_CITY_NAME];
     char spotName[MAX_CITY_NAME];
@@ -19,20 +23,14 @@ typedef struct node{
 
 typedef node *SLL;
 
-// Define a structure for queue nodes
-typedef struct QueueNode {
-    char spotName[100];
-    int day; // Added to store the day of the visit
-    int startHour, startMinute, endHour, endMinute;
-    float duration;
-    struct QueueNode* next;
-} QueueNode;
+//review node
+typedef struct review {
+    char cityName[MAX_CITY_NAME];
+    char spotName[MAX_CITY_NAME];
+    float userRating;
+    char reviewText[256];
+} Review;
 
-// Define the queue structure
-typedef struct {
-    QueueNode* front;
-    QueueNode* rear;
-} Queue;
 
 int length(SLL head);
 void toLowerCase(char *str);
@@ -53,3 +51,11 @@ int isSpotFound(SLL touristSpots, const char *startSpotName);
 float calculateTotalDistance(SLL shortestPath, float **distanceMatrix, SLL touristSpots);
 void displayTime(int hour, int minute);
 void generateItinerary(SLL head, int days);
+
+//review functions
+
+void loadReviews(const char *filename, Review **reviews, int *reviewCount);
+
+void displayReviewsForSpot(Review *reviews, int reviewCount, const char *spotName);
+
+void addReview(const char *filename, Review **reviews, int *reviewCount, const char *cityName, const char *spotName);
