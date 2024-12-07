@@ -5,7 +5,7 @@ Mumbai,Elephanta Caves,4.4,Historical Monument,72.9313,18.9633
 Mumbai,Chhatrapati Shivaji Maharaj Terminus,4.5,Historical Monument,72.8355,18.9402
 Mumbai,Haji Ali Dargah,4.4,Religious Site,72.8103,18.9827
 Mumbai,Siddhivinayak Temple,4.7,Religious Site,72.8311,19.0179
-Mumbai,Juhu Beach,4.3,Beach,72.8260,19.0991
+Mumbai,Juhu Beach,4.3,Beach,72.826,19.0991
 Mumbai,Sanjay Gandhi National Park,4.5,Park,72.9227,19.2167
 Mumbai,Colaba Causeway,4.4,Shopping,72.8312,18.9206
 Mumbai,Nehru Planetarium,4.3,Science Center,72.8089,19.0177
@@ -15,7 +15,7 @@ Jaipur,City Palace,4.6,Historical Monument,75.8204,26.9258
 Jaipur,Jantar Mantar,4.6,Museum,75.8246,26.9248
 Jaipur,Jal Mahal,4.4,Historical Monument,75.8421,26.9534
 Jaipur,Nahargarh Fort,4.6,Historical Monument,75.8205,26.9362
-Jaipur,Albert Hall Museum,4.5,Museum,75.8260,26.9117
+Jaipur,Albert Hall Museum,4.5,Museum,75.826,26.9117
 Jaipur,Galtaji Temple,4.3,Religious Site,75.8544,26.9536
 Jaipur,Birla Mandir,4.6,Religious Site,75.8109,26.8874
 Jaipur,Panna Meena Ka Kund,4.5,Historical Monument,75.8501,26.9806
@@ -24,8 +24,78 @@ New Delhi,Qutub Minar,4.5,Historical Monument,77.1855,28.5244
 New Delhi,Red Fort,4.4,Historical Monument,77.2409,28.6562
 New Delhi,Lotus Temple,4.6,Religious Site,77.2588,28.5535
 New Delhi,Humayun's Tomb,4.6,Historical Monument,77.2495,28.5933
-New Delhi,Akshardham Temple,4.7,Religious Site,77.2810,28.6127
+New Delhi,Akshardham Temple,4.7,Religious Site,77.281,28.6127
 New Delhi,National Museum,4.5,Museum,77.2197,28.6112
 New Delhi,Rajpath,4.4,Historical Monument,77.2248,28.6142
-New Delhi,Jantar Mantar,4.3,Museum,77.2090,28.6270
+New Delhi,Jantar Mantar,4.3,Museum,77.209,28.627
 New Delhi,Lodi Gardens,4.6,Park,77.2185,28.5932
+Chennai,Marina Beach,4.7,Beach,80.2838,13.05
+Chennai,Kapaleeshwarar Temple,4.6,Religious Site,80.2717,13.0333
+Chennai,Marina Beach,4.7, Beach,80.2838,13.05
+Chennai,Kapaleeshwarar Temple,4.6, Religious Site,80.2717,13.0333
+Chennai,Fort St. George,4.4, Historical Monument,80.2945,13.0811
+Chennai,Guindy National Park,4.5, Wildlife Sanctuary,80.2345,13.0033
+Chennai,Santhome Cathedral Basilica,4.6, Religious Site,80.2792,13.0325
+Chennai,Elliot's Beach,4.5, Beach,80.2721,12.9965
+Chennai,Valluvar Kottam,4.4, Historical Monument,80.2363,13.0481
+Chennai,Arignar Anna Zoological Park,4.6, Zoo,80.0762,12.8825
+Bangalore,Cubbon Park,4.6,Park,77.5946,12.9763
+Bangalore,Lalbagh Botanical Garden,4.7,Park,77.5848,12.9507
+Bangalore,Bangalore Palace,4.4,Historical Monument,77.5924,12.9986
+Bangalore,ISKCON Temple,4.7,Religious Site,77.567,13.01
+Bangalore,MG Road,4.5,Street,77.62,12.973
+Bangalore,Bannerghatta National Park,4.6,Wildlife Sanctuary,77.577,12.8003
+Bangalore,Wonderla,4.5,Amusement Park,77.401,12.834
+Bangalore,UB City,4.4,Mall,77.5944,12.9716
+Bangalore,Vidhana Soudha,4.7,Historical Monument,77.5946,12.9794
+Bangalore,Commercial Street,4.5,Market,77.6089,12.9826
+Kolkata,Victoria Memorial,4.7,Historical Monument,88.3426,22.5448
+Kolkata,Howrah Bridge,4.8,Bridge,88.3541,22.5856
+Kolkata,Indian Museum,4.5,Museum,88.351,22.5568
+Kolkata,Dakshineswar Kali Temple,4.8,Religious Site,88.3612,22.6555
+Kolkata,Eco Park,4.6,Park,88.4464,22.6036
+Kolkata,Science City,4.5,Museum,88.4016,22.544
+Kolkata,Marble Palace,4.4,Historical Monument,88.3643,22.5867
+Kolkata,Kalighat Temple,4.6,Religious Site,88.3456,22.523
+Kolkata,Princep Ghat,4.5,Riverside,88.3341,22.5586
+Kolkata,Nicco Park,4.4,Amusement Park,88.4234,22.5805
+Hyderabad,Charminar,4.7,Historical Monument,78.4747,17.3616
+Hyderabad,Golconda Fort,4.6,Historical Monument,78.4002,17.3833
+Hyderabad,Ramoji Film City,4.8,Amusement Park,78.682,17.2555
+Hyderabad,Hussain Sagar Lake,4.6,Riverside,78.4718,17.4239
+Hyderabad,Salar Jung Museum,4.5,Museum,78.4804,17.3713
+Hyderabad,Birla Mandir,4.7,Religious Site,78.4697,17.4062
+Hyderabad,Chowmahalla Palace,4.5,Historical Monument,78.4722,17.3595
+Hyderabad,Nehru Zoological Park,4.4,Wildlife Sanctuary,78.4511,17.3446
+Hyderabad,Shilparamam,4.6,Cultural Site,78.3865,17.4501
+Hyderabad,Lumbini Park,4.5,Park,78.4765,17.412
+Ahmedabad,Sabarmati Ashram,4.8,Historical Monument,72.5796,23.06
+Ahmedabad,Kankaria Lake,4.7, Riverside,72.6003,22.992
+Ahmedabad,Adalaj Stepwell,4.6,Historical Monument,72.5805,23.1681
+Ahmedabad,Sidi Saiyyed Mosque,4.5,Religious Site,72.5803,23.027
+Ahmedabad,Jama Masjid,4.4,Religious Site,72.5828,23.0264
+Ahmedabad,Science City,4.6,Museum,72.5043,23.1165
+Ahmedabad,Auto World Vintage Car Museum,4.5,Museum,72.6722,23.0258
+Ahmedabad,Sarkhej Roza,4.5,Religious Site,72.5155,23.0086
+Ahmedabad,Law Garden,4.4,Park,72.5585,23.0228
+Ahmedabad,Akshardham Temple,4.7,Religious Site,72.6558,23.1725
+Pune,Shaniwar Wada,4.6,Historical Monument,73.8567,18.5196
+Pune,Aga Khan Palace,4.7,Historical Monument,73.9034,18.5545
+Pune,Sinhagad Fort,4.7,Historical Monument,73.7532,18.3666
+Pune,Dagdusheth Halwai Ganpati Temple,4.8,Religious Site,73.8554,18.5167
+Pune,Parvati Hill,4.5,Hill Station,73.8568,18.5029
+Pune,Rajiv Gandhi Zoological Park,4.6,Wildlife Sanctuary,73.8763,18.4575
+Pune,Osho Ashram,4.5,Religious Site,73.911,18.5375
+Pune,Mulshi Dam,4.6,Riverside,73.554,18.5236
+Pune,Pashan Lake,4.4,Riverside,73.7978,18.5353
+Pune,FC Road,4.5,Market,73.8466,18.5168
+Goa,Baga Beach,4.8,Beach,73.7429,15.5582
+Goa,Calangute Beach,4.7,Beach,73.7352,15.5435
+Goa,Basilica of Bom Jesus,4.8,Religious Site,73.906,15.5009
+Goa,Fort Aguada,4.6,Historical Monument,73.7759,15.4923
+Goa,Chapora Fort,4.5,Historical Monument,73.7449,15.6036
+Goa,Dudhsagar Falls,4.9,Waterfall,74.3142,15.3148
+Goa,Anjuna Beach,4.6,Beach,73.7434,15.5837
+Goa,Candolim Beach,4.6,Beach,73.7644,15.5133
+Goa,Vagator Beach,4.5,Beach,73.7445,15.6018
+Goa,Palolem Beach,4.7,Beach,74.0327,15.009

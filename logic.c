@@ -141,6 +141,8 @@ SLL displayTouristSpots(SLL head, const char *cityName, const char *spotType, fl
     return head;  // Return the updated list
 }
 
+
+
 // Function to remove a spot from the linked list
 void removeSpot(SLL *head, const char *spotName) {
     if (*head == NULL) {
