@@ -568,3 +568,43 @@ void displayReviewsForSpot(Review *reviews, int reviewCount, const char *spotNam
         printf("No reviews found for the spot: %s\n", spotName);
     }
 }
+
+// Function to add a new review to the reviews array and save it to the file.
+// Parameters:
+// - filename: Path to the file where the review should be saved.
+// - reviews: Pointer to the array of Review structures (dynamic array).
+// - reviewCount: Pointer to the integer tracking the current number of reviews.
+// - cityName: Name of the city for the new review.
+// - spotName: Name of the spot for the new review.
+void addReview(const char *filename, Review **reviews, int *reviewCount, const char *cityName, const char *spotName){
+    if (*reviewCount >= MAX_REVIEWS) {
+        printf("Maximum review limit reached.\n");
+        return;
+    }
+
+    Review newReview;
+    strcpy(newReview.cityName, cityName);
+    strcpy(newReview.spotName, spotName);
+
+    printf("Enter your review: ");
+    scanf("%[^\n]s", newReview.reviewText);
+    getchar(); // Consume newline
+
+    printf("Enter your rating (0.0 - 5.0): ");
+    scanf("%f", &newReview.userRating);
+    getchar(); // Consume newline
+
+    (*reviews)[*reviewCount] = newReview;
+    (*reviewCount)++;
+
+    FILE *file = fopen(filename, "a");
+    if (!file) {
+        printf("Could not open review file: %s\n", filename);
+        return;
+    }
+
+    fprintf(file, "%s,%s,%.1f,%s\n", newReview.cityName, newReview.spotName, newReview.userRating, newReview.reviewText);
+    fclose(file);
+
+    printf("Review added successfully!\n");
+}
