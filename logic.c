@@ -608,3 +608,8 @@ void addReview(const char *filename, Review **reviews, int *reviewCount, const c
 
     printf("Review added successfully!\n");
 }
+
+// Helper function to display time in HH:MM format
+void displayTime(int hour, int minute){
+    printf("%02d:%02d", hour, minute);
+}
