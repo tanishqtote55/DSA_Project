@@ -799,5 +799,7 @@ void generateItinerary(SLL head, int days){
     for (int i = 0; i < totalNodes; i++) {
         free(distanceMatrix[i]);
     }
+
     free(distanceMatrix);
+    
 }
