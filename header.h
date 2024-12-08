@@ -100,5 +100,5 @@ void displayTime(int hour, int minute);
 // Function to generate an itinerary for a given number of days.
 void generateItinerary(SLL head, int days);
 
-
+// Function to check if the spot is found in the tourist spots list
 int isSpotFound(SLL touristSpots, const char *startSpotName);
