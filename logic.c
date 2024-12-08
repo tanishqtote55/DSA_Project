@@ -317,7 +317,7 @@ float** graphformation(SLL head){
 // - A linked list containing the nodes (tourist spots) in the order of the shortest path found from the starting spot.
 // - NULL if the starting spot is not found or the graph is empty.
 
-SLL dijkstra_iterative(SLL head, const char *startSpotName, float **distanceMatrix){
+SLL dijkstra(SLL head, const char *startSpotName, float **distanceMatrix){
     // Step 1: Get the number of tourist spots
     int len = length(head);
 

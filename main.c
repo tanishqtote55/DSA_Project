@@ -110,7 +110,7 @@ int main(){
         printf("Enter the starting spot name: ");
         scanf("%[^\n]s", startSpotName);
 
-        SLL shortestPath = dijkstra_iterative(touristSpots, startSpotName, distanceMatrix);
+        SLL shortestPath = dijkstra(touristSpots, startSpotName, distanceMatrix);
 
         // Display the shortest path
         printShortestPath(shortestPath);
@@ -120,7 +120,7 @@ int main(){
 
         // Generate and display an itinerary
         int days;
-        printf("Enter the number of days: ");
+        printf("Enter the number of days for planning the trip: ");
         scanf("%d", &days);
         generateItinerary(shortestPath, days);
 

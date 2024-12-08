@@ -74,7 +74,7 @@ SLL getNodeAt(SLL head, int index);
 float** graphformation(SLL head);
 
 // Finds the shortest path using Dijkstra's algorithm (iterative approach)
-SLL dijkstra_iterative(SLL head, const char *startSpotName, float **distanceMatrix);
+SLL dijkstra(SLL head, const char *startSpotName, float **distanceMatrix);
 
 // Prints the Shortest Path from the Starting Spot to All Others
 void printShortestPath(SLL shortestPath);
