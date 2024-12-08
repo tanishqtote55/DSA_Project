@@ -7,7 +7,7 @@ int main(){
     getchar(); // Consume the newline
 
     char spotTypeInput[MAX_CITY_NAME * 10];
-    printf("Enter the spot types Separated by Commas (e.g. Historical Monument, Museum, Park, Religious Site, Shopping, etc.): ");
+    printf("Enter the spot types Separated by Commas (e.g. Historical Monument, Museum, Park,Beach, Religious Site, Shopping, etc.): ");
     scanf("%[^\n]s", spotTypeInput);
     getchar(); // Consume the newline
 
